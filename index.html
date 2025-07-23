@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тап-Тап Хомяк</title>
+    <title>Супер Хомяк Игры</title>
     <script src="https://telegram.org/js/games.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #FF9F43;
@@ -14,6 +15,8 @@
             --dark-color: #2D3436;
             --light-color: #F5F6FA;
             --success-color: #1DD1A1;
+            --info-color: #54A0FF;
+            --purple-color: #9B59B6;
         }
         
         body {
@@ -21,14 +24,118 @@
             text-align: center;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             color: var(--dark-color);
             min-height: 100vh;
         }
         
-        #game-container {
-            max-width: 600px;
+        #app-container {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
+        }
+        
+        #header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2rem;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--light-color);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+        
+        .user-stat i {
+            color: var(--primary-color);
+        }
+        
+        #main-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        #games-menu {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .menu-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        .game-tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .game-tab:hover {
+            background: var(--light-color);
+            transform: translateX(5px);
+        }
+        
+        .game-tab.active {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .game-tab i {
+            font-size: 1.2rem;
+        }
+        
+        #game-display {
+            flex: 3;
+            min-width: 300px;
             background: white;
             border-radius: 20px;
             padding: 25px;
@@ -37,7 +144,7 @@
             overflow: hidden;
         }
         
-        #game-container::before {
+        #game-display::before {
             content: "";
             position: absolute;
             top: 0;
@@ -47,20 +154,29 @@
             background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
         }
         
-        h1 {
+        .game-title {
             color: var(--primary-color);
             margin-bottom: 10px;
-            font-size: 2.5rem;
+            font-size: 2rem;
             text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
         }
         
-        .subtitle {
+        .game-description {
             color: var(--dark-color);
             margin-bottom: 20px;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         
-        #game-area {
+        /* Стили для игры с хомяком */
+        #hamster-game {
+            display: block;
+        }
+        
+        .game-container {
+            display: none;
+        }
+        
+        #hamster-game-area {
             width: 100%;
             height: 350px;
             background: linear-gradient(to bottom, #E0F7FA, #B2EBF2);
@@ -80,6 +196,7 @@
             transition: transform 0.1s, filter 0.2s;
             user-select: none;
             -webkit-user-drag: none;
+            z-index: 10;
         }
         
         #hamster:hover {
@@ -95,6 +212,7 @@
             justify-content: space-between;
             margin: 20px 0;
             flex-wrap: wrap;
+            gap: 10px;
         }
         
         .stat-box {
@@ -102,10 +220,9 @@
             padding: 15px;
             border-radius: 12px;
             min-width: 120px;
-            margin: 5px;
+            flex-grow: 1;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             border: 2px solid var(--light-color);
-            flex-grow: 1;
         }
         
         .stat-title {
@@ -121,15 +238,15 @@
             color: var(--primary-color);
         }
         
-        #score-display {
+        #hamster-score-display {
             font-size: 2rem;
         }
         
-        #timer {
+        #hamster-timer {
             color: var(--accent-color);
         }
         
-        #coins-display {
+        #hamster-coins-display {
             color: var(--success-color);
         }
         
@@ -175,25 +292,43 @@
             box-shadow: none;
         }
         
-        #start-btn {
+        .btn-success {
             background: var(--success-color);
             box-shadow: 0 4px 8px rgba(29, 209, 161, 0.3);
         }
         
-        #start-btn:hover {
+        .btn-success:hover {
             box-shadow: 0 6px 12px rgba(29, 209, 161, 0.4);
         }
         
-        #upgrade-btn {
+        .btn-danger {
             background: var(--accent-color);
             box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
         }
         
-        #upgrade-btn:hover {
+        .btn-danger:hover {
             box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
         }
         
-        .hamster-info {
+        .btn-info {
+            background: var(--info-color);
+            box-shadow: 0 4px 8px rgba(84, 160, 255, 0.3);
+        }
+        
+        .btn-info:hover {
+            box-shadow: 0 6px 12px rgba(84, 160, 255, 0.4);
+        }
+        
+        .btn-purple {
+            background: var(--purple-color);
+            box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+        }
+        
+        .btn-purple:hover {
+            box-shadow: 0 6px 12px rgba(155, 89, 182, 0.4);
+        }
+        
+        .pet-info {
             background: white;
             border-radius: 12px;
             padding: 15px;
@@ -203,21 +338,25 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
         
-        .hamster-name {
+        .pet-name {
             font-size: 1.3rem;
             color: var(--primary-color);
             margin-bottom: 10px;
             font-weight: bold;
         }
         
-        .hamster-stats {
+        .pet-stats {
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
-        .hamster-stat {
+        .pet-stat {
             text-align: center;
+            flex-grow: 1;
+            min-width: 80px;
         }
         
         .stat-label {
@@ -267,18 +406,144 @@
             border-radius: 50%;
         }
         
-        @media (max-width: 500px) {
-            #game-area {
-                height: 250px;
-            }
-            
-            .stat-box {
-                min-width: calc(50% - 20px);
-            }
-            
-            button {
-                min-width: 100%;
-            }
+        /* Стили для магазина */
+        #shop {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .shop-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px solid var(--light-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .shop-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .shop-item-image {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .shop-item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .shop-item-price {
+            color: var(--success-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .shop-item-button {
+            width: 100%;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* Стили для мини-игры с падающими предметами */
+        #falling-items-game {
+            display: none;
+        }
+        
+        #falling-game-area {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #E0F7FA, #B2EBF2);
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--secondary-color);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .falling-item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+        
+        .basket {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background-image: url('https://i.imgur.com/JR9Z1pO.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        
+        /* Стили для мини-игры с памятью */
+        #memory-game {
+            display: none;
+        }
+        
+        #memory-game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        
+        .memory-card {
+            height: 100px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+        
+        .memory-card.flipped {
+            background: white;
+            color: var(--dark-color);
+            transform: rotateY(180deg);
+        }
+        
+        .memory-card.matched {
+            visibility: hidden;
+            opacity: 0;
+            transform: scale(0.8);
         }
         
         /* Анимации */
@@ -293,12 +558,30 @@
             100% { transform: rotateY(360deg); }
         }
         
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-50px); }
+            100% { transform: translateY(400px); }
+        }
+        
         .bounce {
             animation: bounce 0.5s infinite;
         }
         
         .coin-flip {
             animation: coinFlip 1s;
+        }
+        
+        .float {
+            animation: float 2s infinite ease-in-out;
+        }
+        
+        .fall {
+            animation: fall linear;
         }
         
         /* Эффект при тапе */
@@ -310,395 +593,1204 @@
             border-radius: 50%;
             pointer-events: none;
             animation: tapAnimation 0.5s forwards;
+            z-index: 20;
         }
         
         @keyframes tapAnimation {
             0% { transform: scale(0.5); opacity: 1; }
             100% { transform: scale(2); opacity: 0; }
         }
+        
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.3s ease-out;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            font-size: 1.5rem;
+        }
+        
+        .notification.success i {
+            color: var(--success-color);
+        }
+        
+        .notification.error i {
+            color: var(--accent-color);
+        }
+        
+        .notification.info i {
+            color: var(--info-color);
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            #main-content {
+                flex-direction: column;
+            }
+            
+            #games-menu {
+                order: 2;
+            }
+            
+            #game-display {
+                order: 1;
+            }
+            
+            #header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .user-info {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            #hamster-game-area, #falling-game-area {
+                height: 250px;
+            }
+            
+            #memory-game-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .stat-box {
+                min-width: calc(50% - 20px);
+            }
+            
+            button {
+                min-width: 100%;
+            }
+            
+            #memory-game-board {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <h1>🐹 Тап-Тап Хомяк</h1>
-        <div class="subtitle">Тапай хомяка, зарабатывай коины и улучшай его!</div>
-        
-        <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-title">Счет</div>
-                <div id="score-display" class="stat-value">0</div>
+    <div id="app-container">
+        <div id="header">
+            <div class="logo">
+                <img src="https://i.imgur.com/JR9Z1pO.png" alt="Логотип">
+                <h1>Супер Хомяк Игры</h1>
             </div>
-            <div class="stat-box">
-                <div class="stat-title">Время</div>
-                <div id="timer" class="stat-value">30</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-title">Коины</div>
-                <div id="coins-display" class="stat-value">0</div>
+            <div class="user-info">
+                <div class="user-stat">
+                    <i class="fas fa-coins"></i>
+                    <span id="global-coins">0</span>
+                </div>
+                <div class="user-stat">
+                    <i class="fas fa-trophy"></i>
+                    <span id="global-score">0</span>
+                </div>
+                <div class="user-stat">
+                    <i class="fas fa-user"></i>
+                    <span id="username">Игрок</span>
+                </div>
             </div>
         </div>
         
-        <div id="game-area">
-            <img id="hamster" src="https://i.imgur.com/JR9Z1pO.png" alt="Хомяк">
-        </div>
-        
-        <div class="hamster-info">
-            <div class="hamster-name" id="hamster-name">Хомяк</div>
-            <div class="hamster-stats">
-                <div class="hamster-stat">
-                    <div class="stat-label">Уровень</div>
-                    <div class="stat-number" id="hamster-level">1</div>
+        <div id="main-content">
+            <div id="games-menu">
+                <div class="menu-title">🎮 Мини-игры</div>
+                <div class="game-tab active" data-game="hamster-game">
+                    <i class="fas fa-paw"></i> Тап-Тап Хомяк
                 </div>
-                <div class="hamster-stat">
-                    <div class="stat-label">Доход</div>
-                    <div class="stat-number" id="hamster-income">5 <small>коинов/час</small></div>
+                <div class="game-tab" data-game="falling-items-game">
+                    <i class="fas fa-apple-alt"></i> Ловец фруктов
                 </div>
-                <div class="hamster-stat">
-                    <div class="stat-label">Множитель</div>
-                    <div class="stat-number" id="hamster-multiplier">1x</div>
+                <div class="game-tab" data-game="memory-game">
+                    <i class="fas fa-brain"></i> Игра на память
+                </div>
+                
+                <div class="menu-title" style="margin-top: 30px;">🛒 Магазин</div>
+                <div class="game-tab" data-game="shop">
+                    <i class="fas fa-shopping-cart"></i> Покупки
+                </div>
+                
+                <div class="menu-title" style="margin-top: 30px;">🏆 Достижения</div>
+                <div class="game-tab" data-game="achievements">
+                    <i class="fas fa-medal"></i> Мои награды
                 </div>
             </div>
-            <div class="level-bar">
-                <div class="level-progress" id="level-progress"></div>
+            
+            <div id="game-display">
+                <!-- Игра с хомяком -->
+                <div id="hamster-game" class="game-container">
+                    <h2 class="game-title">🐹 Тап-Тап Хомяк</h2>
+                    <div class="game-description">Тапай хомяка, зарабатывай очки и улучшай своего питомца!</div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-title">Счет</div>
+                            <div id="hamster-score-display" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Время</div>
+                            <div id="hamster-timer" class="stat-value">30</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Очки</div>
+                            <div id="hamster-coins-display" class="stat-value">0</div>
+                        </div>
+                    </div>
+                    
+                    <div id="hamster-game-area">
+                        <img id="hamster" src="https://i.imgur.com/JR9Z1pO.png" alt="Хомяк">
+                    </div>
+                    
+                    <div class="pet-info">
+                        <div class="pet-name" id="hamster-name">Хомяк</div>
+                        <div class="pet-stats">
+                            <div class="pet-stat">
+                                <div class="stat-label">Уровень</div>
+                                <div class="stat-number" id="hamster-level">1</div>
+                            </div>
+                            <div class="pet-stat">
+                                <div class="stat-label">Доход</div>
+                                <div class="stat-number" id="hamster-income">5 <small>коинов/час</small></div>
+                            </div>
+                            <div class="pet-stat">
+                                <div class="stat-label">Множитель</div>
+                                <div class="stat-number" id="hamster-multiplier">1x</div>
+                            </div>
+                            <div class="pet-stat">
+                                <div class="stat-label">Рекорд</div>
+                                <div class="stat-number" id="hamster-highscore">0</div>
+                            </div>
+                        </div>
+                        <div class="level-bar">
+                            <div class="level-progress" id="hamster-level-progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="buttons-container">
+                        <button id="hamster-start-btn" class="btn-success">
+                            <span class="coin"></span> Начать игру
+                        </button>
+                        <button id="hamster-upgrade-btn" class="btn-info" disabled>
+                            <span class="coin"></span> Улучшить (+1)
+                        </button>
+                        <button id="hamster-finish-btn" class="btn-danger" disabled>
+                            <i class="fas fa-stop"></i> Завершить
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Игра с падающими предметами -->
+                <div id="falling-items-game" class="game-container">
+                    <h2 class="game-title">🍎 Ловец фруктов</h2>
+                    <div class="game-description">Лови падающие фрукты корзинкой и зарабатывай очки!</div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-title">Счет</div>
+                            <div id="falling-score-display" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Время</div>
+                            <div id="falling-timer" class="stat-value">60</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Поймано</div>
+                            <div id="falling-caught-display" class="stat-value">0</div>
+                        </div>
+                    </div>
+                    
+                    <div id="falling-game-area">
+                        <div class="basket"></div>
+                    </div>
+                    
+                    <div class="buttons-container">
+                        <button id="falling-start-btn" class="btn-success">
+                            <i class="fas fa-play"></i> Начать игру
+                        </button>
+                        <button id="falling-finish-btn" class="btn-danger" disabled>
+                            <i class="fas fa-stop"></i> Завершить
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Игра на память -->
+                <div id="memory-game" class="game-container">
+                    <h2 class="game-title">🧠 Игра на память</h2>
+                    <div class="game-description">Найди все пары карточек за минимальное время!</div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-title">Ходы</div>
+                            <div id="memory-moves-display" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Время</div>
+                            <div id="memory-timer" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Найдено</div>
+                            <div id="memory-found-display" class="stat-value">0/8</div>
+                        </div>
+                    </div>
+                    
+                    <div id="memory-game-board"></div>
+                    
+                    <div class="buttons-container">
+                        <button id="memory-start-btn" class="btn-success">
+                            <i class="fas fa-play"></i> Начать игру
+                        </button>
+                        <button id="memory-restart-btn" class="btn-purple">
+                            <i class="fas fa-redo"></i> Новая игра
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Магазин -->
+                <div id="shop" class="game-container">
+                    <h2 class="game-title">🛒 Магазин улучшений</h2>
+                    <div class="game-description">Покупайте улучшения для своих питомцев и игр!</div>
+                    
+                    <div class="shop-items">
+                        <div class="shop-item" data-item="hamster-skin1">
+                            <div class="shop-item-image">
+                                <i class="fas fa-paw"></i>
+                            </div>
+                            <div class="shop-item-name">Золотой хомяк</div>
+                            <div class="shop-item-price">100 коинов</div>
+                            <button class="shop-item-button btn-info">Купить</button>
+                        </div>
+                        
+                        <div class="shop-item" data-item="hamster-skin2">
+                            <div class="shop-item-image">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="shop-item-name">Королевский хомяк</div>
+                            <div class="shop-item-price">250 коинов</div>
+                            <button class="shop-item-button btn-info">Купить</button>
+                        </div>
+                        
+                        <div class="shop-item" data-item="income-boost">
+                            <div class="shop-item-image">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="shop-item-name">Ускорение дохода</div>
+                            <div class="shop-item-price">150 коинов</div>
+                            <button class="shop-item-button btn-info">Купить</button>
+                        </div>
+                        
+                        <div class="shop-item" data-item="score-multiplier">
+                            <div class="shop-item-image">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="shop-item-name">Множитель очков</div>
+                            <div class="shop-item-price">200 коинов</div>
+                            <button class="shop-item-button btn-info">Купить</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Достижения -->
+                <div id="achievements" class="game-container">
+                    <h2 class="game-title">🏆 Мои достижения</h2>
+                    <div class="game-description">Зарабатывайте достижения, играя в мини-игры!</div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-title">Достижений</div>
+                            <div id="achievements-count" class="stat-value">0/12</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Прогресс</div>
+                            <div id="achievements-progress" class="stat-value">0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="shop-items" id="achievements-list">
+                        <!-- Достижения будут добавляться динамически -->
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="buttons-container">
-            <button id="start-btn">
-                <span class="coin"></span> Начать игру
-            </button>
-            <button id="upgrade-btn" disabled>
-                <span class="coin"></span> Улучшить (+1)
-            </button>
-            <button id="finish-btn" disabled>
-                <span class="coin"></span> Завершить
-            </button>
         </div>
     </div>
 
     <script>
-        // Получаем данные пользователя из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user_id');
-        
-        // Элементы игры
-        const hamster = document.getElementById('hamster');
-        const gameArea = document.getElementById('game-area');
-        const scoreDisplay = document.getElementById('score-display');
-        const timerDisplay = document.getElementById('timer');
-        const coinsDisplay = document.getElementById('coins-display');
-        const startBtn = document.getElementById('start-btn');
-        const upgradeBtn = document.getElementById('upgrade-btn');
-        const finishBtn = document.getElementById('finish-btn');
-        const hamsterName = document.getElementById('hamster-name');
-        const hamsterLevel = document.getElementById('hamster-level');
-        const hamsterIncome = document.getElementById('hamster-income');
-        const hamsterMultiplier = document.getElementById('hamster-multiplier');
-        const levelProgress = document.getElementById('level-progress');
-        
-        // Переменные игры
-        let score = 0;
-        let coins = 0;
-        let timeLeft = 30;
-        let gameInterval;
-        let timerInterval;
-        let isGameRunning = false;
-        let hamsterData = {
-            name: "Хомяк",
-            level: 1,
-            income: 5,
-            multiplier: 1,
-            xp: 0,
-            xpToNextLevel: 10
+        // Глобальные переменные
+        const userData = {
+            coins: 0,
+            score: 0,
+            username: "Игрок",
+            unlockedItems: [],
+            achievements: [],
+            hamster: {
+                name: "Хомяк",
+                level: 1,
+                income: 5,
+                multiplier: 1,
+                xp: 0,
+                xpToNextLevel: 10,
+                highscore: 0,
+                skin: "default"
+            },
+            fallingGame: {
+                highscore: 0
+            },
+            memoryGame: {
+                bestTime: 0,
+                bestMoves: 0
+            }
         };
         
-        // Загрузка данных хомяка (в реальном приложении это было бы с сервера)
-        function loadHamsterData() {
-            // Здесь должна быть загрузка данных с сервера
-            // Для демо используем localStorage
-            const savedData = localStorage.getItem(`hamster_${userId}`);
+        // Получаем данные пользователя из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id') || "guest_" + Math.floor(Math.random() * 10000);
+        userData.username = urlParams.get('username') || "Игрок_" + Math.floor(Math.random() * 1000);
+        
+        // Загрузка данных
+        function loadUserData() {
+            const savedData = localStorage.getItem(`user_${userId}`);
             if (savedData) {
-                hamsterData = JSON.parse(savedData);
+                Object.assign(userData, JSON.parse(savedData));
             }
-            updateHamsterUI();
+            updateGlobalUI();
         }
         
-        // Сохранение данных хомяка
-        function saveHamsterData() {
-            localStorage.setItem(`hamster_${userId}`, JSON.stringify(hamsterData));
+        // Сохранение данных
+        function saveUserData() {
+            localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
         }
         
-        // Обновление UI хомяка
-        function updateHamsterUI() {
-            hamsterName.textContent = hamsterData.name;
-            hamsterLevel.textContent = hamsterData.level.toFixed(1);
-            hamsterIncome.textContent = `${hamsterData.income.toFixed(1)} коинов/час`;
-            hamsterMultiplier.textContent = `${hamsterData.multiplier.toFixed(1)}x`;
-            levelProgress.style.width = `${(hamsterData.xp / hamsterData.xpToNextLevel) * 100}%`;
+        // Обновление глобального UI
+        function updateGlobalUI() {
+            document.getElementById('global-coins').textContent = userData.coins;
+            document.getElementById('global-score').textContent = userData.score;
+            document.getElementById('username').textContent = userData.username;
+        }
+        
+        // Показ уведомления
+        function showNotification(message, type = "info") {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
             
-            // Обновляем кнопку улучшения
-            const upgradeCost = calculateUpgradeCost();
-            upgradeBtn.innerHTML = `<span class="coin"></span> Улучшить (+${hamsterData.multiplier.toFixed(1)}) - ${upgradeCost} коинов`;
+            let icon = '';
+            switch(type) {
+                case "success":
+                    icon = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case "error":
+                    icon = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                default:
+                    icon = '<i class="fas fa-info-circle"></i>';
+            }
             
-            // Проверяем, может ли пользователь улучшить хомяка
-            upgradeBtn.disabled = coins < upgradeCost;
-        }
-        
-        // Расчет стоимости улучшения
-        function calculateUpgradeCost() {
-            return Math.floor(100 * Math.pow(1.1, hamsterData.level));
-        }
-        
-        // Улучшение хомяка
-        function upgradeHamster() {
-            const upgradeCost = calculateUpgradeCost();
+            notification.innerHTML = `${icon}<span>${message}</span>`;
+            document.body.appendChild(notification);
             
-            if (coins >= upgradeCost) {
-                coins -= upgradeCost;
-                hamsterData.level += 0.1 * hamsterData.multiplier;
-                hamsterData.income += 0.5 * hamsterData.multiplier;
-                hamsterData.xp += 1;
-                
-                // Проверяем, достигнут ли новый уровень
-                if (hamsterData.xp >= hamsterData.xpToNextLevel) {
-                    hamsterData.xp = 0;
-                    hamsterData.xpToNextLevel = Math.floor(hamsterData.xpToNextLevel * 1.2);
-                    hamsterData.multiplier += 0.1;
-                    showLevelUpMessage();
-                }
-                
-                coinsDisplay.textContent = coins;
-                updateHamsterUI();
-                saveHamsterData();
-                
-                // Анимация улучшения
-                hamster.classList.add('bounce');
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
                 setTimeout(() => {
-                    hamster.classList.remove('bounce');
-                }, 1000);
-            }
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
         }
         
-        // Сообщение о повышении уровня
-        function showLevelUpMessage() {
-            const message = document.createElement('div');
-            message.textContent = `🎉 Уровень ${hamsterData.level.toFixed(1)}! Множитель x${hamsterData.multiplier.toFixed(1)}`;
-            message.style.position = 'absolute';
-            message.style.top = '50%';
-            message.style.left = '50%';
-            message.style.transform = 'translate(-50%, -50%)';
-            message.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-            message.style.padding = '10px 20px';
-            message.style.borderRadius = '20px';
-            message.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-            message.style.zIndex = '100';
-            message.style.animation = 'fadeInOut 2s forwards';
-            
-            gameArea.appendChild(message);
-            setTimeout(() => {
-                message.remove();
-            }, 2000);
-        }
-        
-        // Размещаем хомяка случайно
-        function placeHamster() {
-            const maxX = gameArea.offsetWidth - hamster.offsetWidth;
-            const maxY = gameArea.offsetHeight - hamster.offsetHeight;
-            
-            hamster.style.left = Math.random() * maxX + 'px';
-            hamster.style.top = Math.random() * maxY + 'px';
-        }
-        
-        // Создаем эффект при тапе
-        function createTapEffect(x, y) {
-            const effect = document.createElement('div');
-            effect.className = 'tap-effect';
-            effect.style.left = `${x - 15}px`;
-            effect.style.top = `${y - 15}px`;
-            gameArea.appendChild(effect);
-            
-            setTimeout(() => {
-                effect.remove();
-            }, 500);
-        }
-        
-        // Обработчик клика по хомяку
-        hamster.addEventListener('click', (e) => {
-            if (!isGameRunning) return;
-            
-            // Координаты клика
-            const rect = hamster.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            // Создаем эффект в месте клика
-            createTapEffect(x, y);
-            
-            // Увеличиваем счет с учетом множителя
-            score += hamsterData.multiplier;
-            scoreDisplay.textContent = Math.floor(score);
-            
-            // Перемещаем хомяка
-            placeHamster();
-            
-            // Анимация
-            hamster.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                hamster.style.transform = 'scale(1)';
-            }, 100);
-        });
-        
-        // Таймер игры
-        function updateTimer() {
-            timeLeft--;
-            timerDisplay.textContent = timeLeft;
-            
-            if (timeLeft <= 0) {
-                endGame();
-            }
-        }
-        
-        // Начало игры
-        startBtn.addEventListener('click', () => {
-            if (isGameRunning) return;
-            
-            score = 0;
-            timeLeft = 30;
-            scoreDisplay.textContent = score;
-            timerDisplay.textContent = timeLeft;
-            
-            isGameRunning = true;
-            startBtn.disabled = true;
-            upgradeBtn.disabled = true;
-            finishBtn.disabled = false;
-            
-            placeHamster();
-            timerInterval = setInterval(updateTimer, 1000);
-            
-            // Анимация начала игры
-            gameArea.style.boxShadow = 'inset 0 0 30px rgba(255, 214, 0, 0.5)';
-            setTimeout(() => {
-                gameArea.style.boxShadow = 'inset 0 0 20px rgba(0,0,0,0.1)';
-            }, 1000);
-        });
-        
-        // Завершение игры
-        function endGame() {
-            clearInterval(timerInterval);
-            isGameRunning = false;
-            startBtn.disabled = false;
-            finishBtn.disabled = true;
-            
-            // Рассчитываем заработанные коины (1 коин за 2 тапа с учетом множителя)
-            const coinsEarned = Math.floor(score / 2);
-            coins += coinsEarned;
-            coinsDisplay.textContent = coins;
-            updateHamsterUI();
-            saveHamsterData();
-            
-            // Отправляем результаты в бота (если игра запущена через Telegram)
-            if (window.TelegramGameProxy) {
-                TelegramGameProxy.sendData({
-                    user_id: userId,
-                    score: score,
-                    coins: coinsEarned,
-                    time: 30 - timeLeft,
-                    hamster_level: hamsterData.level,
-                    hamster_income: hamsterData.income
+        // Переключение между играми
+        document.querySelectorAll('.game-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Убираем активный класс у всех вкладок
+                document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+                // Добавляем активный класс текущей вкладке
+                tab.classList.add('active');
+                
+                // Скрываем все игры
+                document.querySelectorAll('.game-container').forEach(game => {
+                    game.style.display = 'none';
                 });
-            }
-            
-            // Показываем результаты
-            const resultMessage = `Игра окончена!\n\n🏆 Счет: ${score}\n💰 Получено коинов: ${coinsEarned}\n\nУровень хомяка: ${hamsterData.level.toFixed(1)}\nДоход: ${hamsterData.income.toFixed(1)} коинов/час`;
-            
-            // В Telegram показываем alert, в браузере - красивый попап
-            if (window.TelegramGameProxy) {
-                alert(resultMessage);
                 
-                // Закрываем игру через 3 секунды
-                setTimeout(() => {
-                    TelegramGameProxy.close();
-                }, 3000);
-            } else {
-                showCustomAlert(resultMessage);
-            }
-        }
-        
-        // Показывает кастомное окно с результатами (для браузерной версии)
-        function showCustomAlert(message) {
-            const overlay = document.createElement('div');
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.right = '0';
-            overlay.style.bottom = '0';
-            overlay.style.backgroundColor = 'rgba(0,0,0,0.7)';
-            overlay.style.zIndex = '1000';
-            overlay.style.display = 'flex';
-            overlay.style.justifyContent = 'center';
-            overlay.style.alignItems = 'center';
-            
-            const alertBox = document.createElement('div');
-            alertBox.style.backgroundColor = 'white';
-            alertBox.style.padding = '25px';
-            alertBox.style.borderRadius = '15px';
-            alertBox.style.maxWidth = '80%';
-            alertBox.style.textAlign = 'center';
-            alertBox.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
-            
-            const messageLines = message.split('\n');
-            messageLines.forEach(line => {
-                const p = document.createElement('p');
-                p.textContent = line;
-                p.style.margin = '10px 0';
-                if (line.includes('🏆') || line.includes('💰')) {
-                    p.style.fontWeight = 'bold';
-                    p.style.fontSize = '1.1em';
+                // Показываем выбранную игру
+                const gameId = tab.getAttribute('data-game');
+                document.getElementById(gameId).style.display = 'block';
+                
+                // Если выбрана игра на память, инициализируем доску
+                if (gameId === 'memory-game') {
+                    initMemoryGame();
                 }
-                alertBox.appendChild(p);
             });
+        });
+        
+        // ==================== ИГРА С ХОМЯКОМ ====================
+        const hamsterGame = {
+            elements: {
+                hamster: document.getElementById('hamster'),
+                gameArea: document.getElementById('hamster-game-area'),
+                scoreDisplay: document.getElementById('hamster-score-display'),
+                timerDisplay: document.getElementById('hamster-timer'),
+                coinsDisplay: document.getElementById('hamster-coins-display'),
+                startBtn: document.getElementById('hamster-start-btn'),
+                upgradeBtn: document.getElementById('hamster-upgrade-btn'),
+                finishBtn: document.getElementById('hamster-finish-btn'),
+                name: document.getElementById('hamster-name'),
+                level: document.getElementById('hamster-level'),
+                income: document.getElementById('hamster-income'),
+                multiplier: document.getElementById('hamster-multiplier'),
+                levelProgress: document.getElementById('hamster-level-progress'),
+                highscore: document.getElementById('hamster-highscore')
+            },
+            variables: {
+                score: 0,
+                timeLeft: 30,
+                gameInterval: null,
+                timerInterval: null,
+                isGameRunning: false
+            },
+            init: function() {
+                this.updateHamsterUI();
+                this.elements.hamster.addEventListener('click', this.handleHamsterClick.bind(this));
+                this.elements.startBtn.addEventListener('click', this.startGame.bind(this));
+                this.elements.upgradeBtn.addEventListener('click', this.upgradeHamster.bind(this));
+                this.elements.finishBtn.addEventListener('click', this.endGame.bind(this));
+                this.placeHamster();
+            },
+            placeHamster: function() {
+                const maxX = this.elements.gameArea.offsetWidth - this.elements.hamster.offsetWidth;
+                const maxY = this.elements.gameArea.offsetHeight - this.elements.hamster.offsetHeight;
+                
+                this.elements.hamster.style.left = Math.random() * maxX + 'px';
+                this.elements.hamster.style.top = Math.random() * maxY + 'px';
+            },
+            createTapEffect: function(x, y) {
+                const effect = document.createElement('div');
+                effect.className = 'tap-effect';
+                effect.style.left = `${x - 15}px`;
+                effect.style.top = `${y - 15}px`;
+                this.elements.gameArea.appendChild(effect);
+                
+                setTimeout(() => {
+                    effect.remove();
+                }, 500);
+            },
+            handleHamsterClick: function(e) {
+                if (!this.variables.isGameRunning) return;
+                
+                const rect = this.elements.hamster.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                this.createTapEffect(x, y);
+                
+                this.variables.score += userData.hamster.multiplier;
+                this.elements.scoreDisplay.textContent = Math.floor(this.variables.score);
+                
+                this.placeHamster();
+                
+                this.elements.hamster.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    this.elements.hamster.style.transform = 'scale(1)';
+                }, 100);
+            },
+            updateTimer: function() {
+                this.variables.timeLeft--;
+                this.elements.timerDisplay.textContent = this.variables.timeLeft;
+                
+                if (this.variables.timeLeft <= 0) {
+                    this.endGame();
+                }
+            },
+            startGame: function() {
+                if (this.variables.isGameRunning) return;
+                
+                this.variables.score = 0;
+                this.variables.timeLeft = 30;
+                this.elements.scoreDisplay.textContent = this.variables.score;
+                this.elements.timerDisplay.textContent = this.variables.timeLeft;
+                
+                this.variables.isGameRunning = true;
+                this.elements.startBtn.disabled = true;
+                this.elements.upgradeBtn.disabled = true;
+                this.elements.finishBtn.disabled = false;
+                
+                this.placeHamster();
+                this.variables.timerInterval = setInterval(this.updateTimer.bind(this), 1000);
+                
+                this.elements.gameArea.style.boxShadow = 'inset 0 0 30px rgba(255, 214, 0, 0.5)';
+                setTimeout(() => {
+                    this.elements.gameArea.style.boxShadow = 'inset 0 0 20px rgba(0,0,0,0.1)';
+                }, 1000);
+            },
+            endGame: function() {
+                clearInterval(this.variables.timerInterval);
+                this.variables.isGameRunning = false;
+                this.elements.startBtn.disabled = false;
+                this.elements.finishBtn.disabled = true;
+                
+                const coinsEarned = Math.floor(this.variables.score / 2);
+                userData.coins += coinsEarned;
+                userData.score += this.variables.score;
+                
+                // Обновляем рекорд
+                if (this.variables.score > userData.hamster.highscore) {
+                    userData.hamster.highscore = this.variables.score;
+                    this.elements.highscore.textContent = userData.hamster.highscore;
+                }
+                
+                updateGlobalUI();
+                this.updateHamsterUI();
+                saveUserData();
+                
+                if (window.TelegramGameProxy) {
+                    TelegramGameProxy.sendData({
+                        user_id: userId,
+                        score: this.variables.score,
+                        coins: coinsEarned,
+                        time: 30 - this.variables.timeLeft,
+                        hamster_level: userData.hamster.level,
+                        hamster_income: userData.hamster.income
+                    });
+                }
+                
+                const resultMessage = `Игра окончена!\n\n🏆 Счет: ${this.variables.score}\n💰 Получено коинов: ${coinsEarned}\n\nУровень хомяка: ${userData.hamster.level.toFixed(1)}\nДоход: ${userData.hamster.income.toFixed(1)} коинов/час`;
+                
+                if (window.TelegramGameProxy) {
+                    alert(resultMessage);
+                } else {
+                    showNotification(resultMessage, 'success');
+                }
+            },
+            updateHamsterUI: function() {
+                this.elements.name.textContent = userData.hamster.name;
+                this.elements.level.textContent = userData.hamster.level.toFixed(1);
+                this.elements.income.textContent = `${userData.hamster.income.toFixed(1)} коинов/час`;
+                this.elements.multiplier.textContent = `${userData.hamster.multiplier.toFixed(1)}x`;
+                this.elements.levelProgress.style.width = `${(userData.hamster.xp / userData.hamster.xpToNextLevel) * 100}%`;
+                this.elements.highscore.textContent = userData.hamster.highscore;
+                
+                const upgradeCost = this.calculateUpgradeCost();
+                this.elements.upgradeBtn.innerHTML = `<span class="coin"></span> Улучшить (+${userData.hamster.multiplier.toFixed(1)}) - ${upgradeCost} коинов`;
+                this.elements.upgradeBtn.disabled = userData.coins < upgradeCost;
+            },
+            calculateUpgradeCost: function() {
+                return Math.floor(100 * Math.pow(1.1, userData.hamster.level));
+            },
+            upgradeHamster: function() {
+                const upgradeCost = this.calculateUpgradeCost();
+                
+                if (userData.coins >= upgradeCost) {
+                    userData.coins -= upgradeCost;
+                    userData.hamster.level += 0.1 * userData.hamster.multiplier;
+                    userData.hamster.income += 0.5 * userData.hamster.multiplier;
+                    userData.hamster.xp += 1;
+                    
+                    if (userData.hamster.xp >= userData.hamster.xpToNextLevel) {
+                        userData.hamster.xp = 0;
+                        userData.hamster.xpToNextLevel = Math.floor(userData.hamster.xpToNextLevel * 1.2);
+                        userData.hamster.multiplier += 0.1;
+                        this.showLevelUpMessage();
+                    }
+                    
+                    updateGlobalUI();
+                    this.updateHamsterUI();
+                    saveUserData();
+                    
+                    this.elements.hamster.classList.add('bounce');
+                    setTimeout(() => {
+                        this.elements.hamster.classList.remove('bounce');
+                    }, 1000);
+                    
+                    showNotification(`Хомяк улучшен до уровня ${userData.hamster.level.toFixed(1)}!`, 'success');
+                }
+            },
+            showLevelUpMessage: function() {
+                const message = document.createElement('div');
+                message.textContent = `🎉 Уровень ${userData.hamster.level.toFixed(1)}! Множитель x${userData.hamster.multiplier.toFixed(1)}`;
+                message.style.position = 'absolute';
+                message.style.top = '50%';
+                message.style.left = '50%';
+                message.style.transform = 'translate(-50%, -50%)';
+                message.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                message.style.padding = '10px 20px';
+                message.style.borderRadius = '20px';
+                message.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                message.style.zIndex = '100';
+                message.style.animation = 'fadeInOut 2s forwards';
+                
+                this.elements.gameArea.appendChild(message);
+                setTimeout(() => {
+                    message.remove();
+                }, 2000);
+            }
+        };
+        
+        // ==================== ИГРА С ПАДАЮЩИМИ ПРЕДМЕТАМИ ====================
+        const fallingItemsGame = {
+            elements: {
+                gameArea: document.getElementById('falling-game-area'),
+                scoreDisplay: document.getElementById('falling-score-display'),
+                timerDisplay: document.getElementById('falling-timer'),
+                caughtDisplay: document.getElementById('falling-caught-display'),
+                startBtn: document.getElementById('falling-start-btn'),
+                finishBtn: document.getElementById('falling-finish-btn'),
+                basket: document.querySelector('.basket')
+            },
+            variables: {
+                score: 0,
+                caught: 0,
+                timeLeft: 60,
+                gameInterval: null,
+                timerInterval: null,
+                isGameRunning: false,
+                items: [
+                    { type: 'apple', emoji: '🍎', points: 10 },
+                    { type: 'banana', emoji: '🍌', points: 15 },
+                    { type: 'cherry', emoji: '🍒', points: 20 },
+                    { type: 'grape', emoji: '🍇', points: 25 }
+                ],
+                basketPosition: 50,
+                moveSpeed: 20
+            },
+            init: function() {
+                this.elements.startBtn.addEventListener('click', this.startGame.bind(this));
+                this.elements.finishBtn.addEventListener('click', this.endGame.bind(this));
+                
+                // Обработчики движения корзинки
+                document.addEventListener('keydown', (e) => {
+                    if (!this.variables.isGameRunning) return;
+                    
+                    const gameWidth = this.elements.gameArea.offsetWidth;
+                    const basketWidth = 80;
+                    
+                    if (e.key === 'ArrowLeft') {
+                        this.variables.basketPosition = Math.max(0, this.variables.basketPosition - this.variables.moveSpeed);
+                        this.elements.basket.style.left = `${this.variables.basketPosition}px`;
+                    } else if (e.key === 'ArrowRight') {
+                        this.variables.basketPosition = Math.min(gameWidth - basketWidth, this.variables.basketPosition + this.variables.moveSpeed);
+                        this.elements.basket.style.left = `${this.variables.basketPosition}px`;
+                    }
+                });
+                
+                // Обработчики для сенсорных устройств
+                let touchStartX = 0;
+                
+                this.elements.gameArea.addEventListener('touchstart', (e) => {
+                    if (!this.variables.isGameRunning) return;
+                    touchStartX = e.touches[0].clientX;
+                });
+                
+                this.elements.gameArea.addEventListener('touchmove', (e) => {
+                    if (!this.variables.isGameRunning) return;
+                    e.preventDefault();
+                    
+                    const touchX = e.touches[0].clientX;
+                    const diff = touchX - touchStartX;
+                    const gameWidth = this.elements.gameArea.offsetWidth;
+                    const basketWidth = 80;
+                    
+                    this.variables.basketPosition = Math.max(0, Math.min(
+                        gameWidth - basketWidth, 
+                        this.variables.basketPosition + diff * 0.5
+                    ));
+                    
+                    this.elements.basket.style.left = `${this.variables.basketPosition}px`;
+                    touchStartX = touchX;
+                });
+            },
+            createItem: function() {
+                if (!this.variables.isGameRunning) return;
+                
+                const randomItem = this.variables.items[Math.floor(Math.random() * this.variables.items.length)];
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                item.textContent = randomItem.emoji;
+                item.dataset.type = randomItem.type;
+                item.dataset.points = randomItem.points;
+                
+                const maxX = this.elements.gameArea.offsetWidth - 50;
+                const x = Math.random() * maxX;
+                item.style.left = `${x}px`;
+                
+                // Анимация падения с разной скоростью
+                const duration = 3 + Math.random() * 2;
+                item.style.animation = `fall ${duration}s linear`;
+                
+                item.addEventListener('click', () => {
+                    this.catchItem(item, randomItem.points);
+                });
+                
+                this.elements.gameArea.appendChild(item);
+                
+                // Удаляем элемент после завершения анимации
+                setTimeout(() => {
+                    if (item.parentNode) {
+                        item.remove();
+                    }
+                }, duration * 1000);
+            },
+            catchItem: function(item, points) {
+                if (!this.variables.isGameRunning) return;
+                
+                // Проверяем, находится ли корзинка под предметом
+                const basketRect = this.elements.basket.getBoundingClientRect();
+                const itemRect = item.getBoundingClientRect();
+                
+                if (
+                    itemRect.bottom >= basketRect.top &&
+                    itemRect.left >= basketRect.left - 20 &&
+                    itemRect.right <= basketRect.right + 20
+                ) {
+                    this.variables.score += points;
+                    this.variables.caught++;
+                    this.elements.scoreDisplay.textContent = this.variables.score;
+                    this.elements.caughtDisplay.textContent = this.variables.caught;
+                    
+                    // Эффект при ловле
+                    item.style.animation = 'none';
+                    item.style.transform = 'scale(1.5)';
+                    item.style.opacity = '0';
+                    setTimeout(() => {
+                        item.remove();
+                    }, 300);
+                    
+                    // Эффект монетки
+                    const coinEffect = document.createElement('div');
+                    coinEffect.textContent = `+${points}`;
+                    coinEffect.style.position = 'absolute';
+                    coinEffect.style.left = `${basketRect.left + basketRect.width / 2}px`;
+                    coinEffect.style.top = `${basketRect.top - 30}px`;
+                    coinEffect.style.color = 'gold';
+                    coinEffect.style.fontWeight = 'bold';
+                    coinEffect.style.fontSize = '1.5rem';
+                    coinEffect.style.animation = 'float 1s ease-out forwards';
+                    document.body.appendChild(coinEffect);
+                    
+                    setTimeout(() => {
+                        coinEffect.remove();
+                    }, 1000);
+                }
+            },
+            updateTimer: function() {
+                this.variables.timeLeft--;
+                this.elements.timerDisplay.textContent = this.variables.timeLeft;
+                
+                if (this.variables.timeLeft <= 0) {
+                    this.endGame();
+                }
+            },
+            startGame: function() {
+                if (this.variables.isGameRunning) return;
+                
+                // Очищаем игровое поле
+                while (this.elements.gameArea.firstChild) {
+                    if (this.elements.gameArea.firstChild !== this.elements.basket) {
+                        this.elements.gameArea.removeChild(this.elements.gameArea.firstChild);
+                    }
+                }
+                
+                this.variables.score = 0;
+                this.variables.caught = 0;
+                this.variables.timeLeft = 60;
+                this.elements.scoreDisplay.textContent = this.variables.score;
+                this.elements.caughtDisplay.textContent = this.variables.caught;
+                this.elements.timerDisplay.textContent = this.variables.timeLeft;
+                
+                this.variables.isGameRunning = true;
+                this.elements.startBtn.disabled = true;
+                this.elements.finishBtn.disabled = false;
+                
+                // Устанавливаем корзинку по центру
+                this.variables.basketPosition = (this.elements.gameArea.offsetWidth - 80) / 2;
+                this.elements.basket.style.left = `${this.variables.basketPosition}px`;
+                
+                // Запускаем таймер и генерацию предметов
+                this.variables.timerInterval = setInterval(this.updateTimer.bind(this), 1000);
+                this.variables.gameInterval = setInterval(this.createItem.bind(this), 800);
+            },
+            endGame: function() {
+                clearInterval(this.variables.timerInterval);
+                clearInterval(this.variables.gameInterval);
+                this.variables.isGameRunning = false;
+                this.elements.startBtn.disabled = false;
+                this.elements.finishBtn.disabled = true;
+                
+                // Начисляем коины (1 коин за 5 очков)
+                const coinsEarned = Math.floor(this.variables.score / 5);
+                userData.coins += coinsEarned;
+                userData.score += this.variables.score;
+                
+                // Обновляем рекорд
+                if (this.variables.score > userData.fallingGame.highscore) {
+                    userData.fallingGame.highscore = this.variables.score;
+                }
+                
+                updateGlobalUI();
+                saveUserData();
+                
+                const resultMessage = `Игра окончена!\n\n🏆 Счет: ${this.variables.score}\n🍎 Поймано фруктов: ${this.variables.caught}\n💰 Получено коинов: ${coinsEarned}`;
+                
+                showNotification(resultMessage, 'success');
+            }
+        };
+        
+        // ==================== ИГРА НА ПАМЯТЬ ====================
+        const memoryGame = {
+            elements: {
+                gameBoard: document.getElementById('memory-game-board'),
+                movesDisplay: document.getElementById('memory-moves-display'),
+                timerDisplay: document.getElementById('memory-timer'),
+                foundDisplay: document.getElementById('memory-found-display'),
+                startBtn: document.getElementById('memory-start-btn'),
+                restartBtn: document.getElementById('memory-restart-btn')
+            },
+            variables: {
+                cards: ['🍎', '🍌', '🍒', '🍇', '🍓', '🍉', '🍊', '🍋'],
+                flippedCards: [],
+                matchedPairs: 0,
+                moves: 0,
+                timer: 0,
+                timerInterval: null,
+                isGameRunning: false,
+                canFlip: true
+            },
+            init: function() {
+                this.elements.startBtn.addEventListener('click', this.startGame.bind(this));
+                this.elements.restartBtn.addEventListener('click', this.initMemoryGame.bind(this));
+                this.initMemoryGame();
+            },
+            initMemoryGame: function() {
+                // Очищаем игровое поле
+                this.elements.gameBoard.innerHTML = '';
+                
+                // Сбрасываем переменные
+                this.variables.matchedPairs = 0;
+                this.variables.moves = 0;
+                this.variables.timer = 0;
+                this.variables.flippedCards = [];
+                this.variables.isGameRunning = false;
+                this.variables.canFlip = true;
+                
+                // Обновляем UI
+                this.elements.movesDisplay.textContent = this.variables.moves;
+                this.elements.timerDisplay.textContent = this.variables.timer;
+                this.elements.foundDisplay.textContent = `${this.variables.matchedPairs}/8`;
+                
+                // Останавливаем таймер, если он был запущен
+                clearInterval(this.variables.timerInterval);
+                
+                // Создаем пары карточек
+                const cardPairs = [...this.variables.cards, ...this.variables.cards];
+                
+                // Перемешиваем карточки
+                for (let i = cardPairs.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cardPairs[i], cardPairs[j]] = [cardPairs[j], cardPairs[i]];
+                }
+                
+                // Создаем карточки на игровом поле
+                cardPairs.forEach((emoji, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'memory-card';
+                    card.dataset.index = index;
+                    card.dataset.value = emoji;
+                    card.addEventListener('click', () => this.flipCard(card));
+                    this.elements.gameBoard.appendChild(card);
+                });
+            },
+            startGame: function() {
+                if (this.variables.isGameRunning) return;
+                
+                this.variables.isGameRunning = true;
+                this.variables.timerInterval = setInterval(() => {
+                    this.variables.timer++;
+                    this.elements.timerDisplay.textContent = this.variables.timer;
+                }, 1000);
+                
+                this.elements.startBtn.disabled = true;
+            },
+            flipCard: function(card) {
+                if (!this.variables.isGameRunning || !this.variables.canFlip || 
+                    card.classList.contains('flipped') || 
+                    card.classList.contains('matched')) return;
+                
+                // Переворачиваем карточку
+                card.classList.add('flipped');
+                card.textContent = card.dataset.value;
+                this.variables.flippedCards.push(card);
+                
+                // Если перевернуто 2 карточки, проверяем на совпадение
+                if (this.variables.flippedCards.length === 2) {
+                    this.variables.moves++;
+                    this.elements.movesDisplay.textContent = this.variables.moves;
+                    
+                    this.checkForMatch();
+                }
+            },
+            checkForMatch: function() {
+                this.variables.canFlip = false;
+                
+                const [card1, card2] = this.variables.flippedCards;
+                
+                if (card1.dataset.value === card2.dataset.value) {
+                    // Совпадение найдено
+                    setTimeout(() => {
+                        card1.classList.add('matched');
+                        card2.classList.add('matched');
+                        this.variables.flippedCards = [];
+                        this.variables.canFlip = true;
+                        
+                        this.variables.matchedPairs++;
+                        this.elements.foundDisplay.textContent = `${this.variables.matchedPairs}/8`;
+                        
+                        // Проверяем, завершена ли игра
+                        if (this.variables.matchedPairs === 8) {
+                            this.endGame();
+                        }
+                    }, 500);
+                } else {
+                    // Нет совпадения - переворачиваем обратно
+                    setTimeout(() => {
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        card1.textContent = '';
+                        card2.textContent = '';
+                        this.variables.flippedCards = [];
+                        this.variables.canFlip = true;
+                    }, 1000);
+                }
+            },
+            endGame: function() {
+                clearInterval(this.variables.timerInterval);
+                this.variables.isGameRunning = false;
+                
+                // Начисляем коины (1 коин за 5 секунд и 1 коин за 5 ходов)
+                const timeBonus = Math.max(1, Math.floor(30 / this.variables.timer));
+                const movesBonus = Math.max(1, Math.floor(30 / this.variables.moves));
+                const coinsEarned = timeBonus + movesBonus;
+                
+                userData.coins += coinsEarned;
+                userData.score += this.variables.matchedPairs * 10;
+                
+                // Обновляем рекорды
+                if (userData.memoryGame.bestTime === 0 || this.variables.timer < userData.memoryGame.bestTime) {
+                    userData.memoryGame.bestTime = this.variables.timer;
+                }
+                
+                if (userData.memoryGame.bestMoves === 0 || this.variables.moves < userData.memoryGame.bestMoves) {
+                    userData.memoryGame.bestMoves = this.variables.moves;
+                }
+                
+                updateGlobalUI();
+                saveUserData();
+                
+                const resultMessage = `Поздравляем! 🎉\n\nВы нашли все пары за ${this.variables.timer} секунд и ${this.variables.moves} ходов!\n\n💰 Получено коинов: ${coinsEarned}`;
+                
+                showNotification(resultMessage, 'success');
+            }
+        };
+        
+        // ==================== МАГАЗИН ====================
+        const shop = {
+            items: [
+                {
+                    id: 'hamster-skin1',
+                    name: 'Золотой хомяк',
+                    price: 100,
+                    description: 'Эксклюзивный золотой скин для вашего хомяка',
+                    icon: 'fas fa-paw',
+                    effect: () => {
+                        userData.hamster.skin = 'gold';
+                        showNotification('Теперь у вас золотой хомяк!', 'success');
+                    }
+                },
+                {
+                    id: 'hamster-skin2',
+                    name: 'Королевский хомяк',
+                    price: 250,
+                    description: 'Роскошный королевский скин для хомяка',
+                    icon: 'fas fa-crown',
+                    effect: () => {
+                        userData.hamster.skin = 'royal';
+                        showNotification('Теперь у вас королевский хомяк!', 'success');
+                    }
+                },
+                {
+                    id: 'income-boost',
+                    name: 'Ускорение дохода',
+                    price: 150,
+                    description: 'Увеличивает пассивный доход хомяка на 20%',
+                    icon: 'fas fa-chart-line',
+                    effect: () => {
+                        userData.hamster.income *= 1.2;
+                        showNotification('Доход хомяка увеличен на 20%!', 'success');
+                    }
+                },
+                {
+                    id: 'score-multiplier',
+                    name: 'Множитель очков',
+                    price: 200,
+                    description: 'Увеличивает множитель очков на 0.5x',
+                    icon: 'fas fa-times',
+                    effect: () => {
+                        userData.hamster.multiplier += 0.5;
+                        showNotification(`Множитель очков увеличен до ${userData.hamster.multiplier.toFixed(1)}x!`, 'success');
+                    }
+                }
+            ],
+            init: function() {
+                document.querySelectorAll('.shop-item-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const itemId = e.target.closest('.shop-item').getAttribute('data-item');
+                        this.purchaseItem(itemId);
+                    });
+                });
+            },
+            purchaseItem: function(itemId) {
+                const item = this.items.find(i => i.id === itemId);
+                if (!item) return;
+                
+                if (userData.coins >= item.price) {
+                    userData.coins -= item.price;
+                    item.effect();
+                    updateGlobalUI();
+                    saveUserData();
+                    
+                    // Добавляем предмет в список купленных
+                    if (!userData.unlockedItems.includes(itemId)) {
+                        userData.unlockedItems.push(itemId);
+                    }
+                } else {
+                    showNotification('Недостаточно коинов для покупки!', 'error');
+                }
+            }
+        };
+        
+        // ==================== ДОСТИЖЕНИЯ ====================
+        const achievements = {
+            list: [
+                {
+                    id: 'first-tap',
+                    name: 'Первый тап',
+                    description: 'Тапните хомяка в первый раз',
+                    icon: 'fas fa-hand-pointer',
+                    condition: () => userData.hamster.level > 1,
+                    reward: 10
+                },
+                {
+                    id: 'level-5',
+                    name: 'Опытный хомяковод',
+                    description: 'Достигните 5 уровня с хомяком',
+                    icon: 'fas fa-level-up-alt',
+                    condition: () => userData.hamster.level >= 5,
+                    reward: 50
+                },
+                {
+                    id: 'fruit-master',
+                    name: 'Мастер фруктов',
+                    description: 'Поймайте 50 фруктов в игре "Ловец фруктов"',
+                    icon: 'fas fa-apple-alt',
+                    condition: () => userData.fallingGame.highscore >= 500, // примерно 50 фруктов
+                    reward: 30
+                },
+                {
+                    id: 'memory-pro',
+                    name: 'Профи памяти',
+                    description: 'Найдите все пары менее чем за 30 секунд',
+                    icon: 'fas fa-brain',
+                    condition: () => userData.memoryGame.bestTime > 0 && userData.memoryGame.bestTime <= 30,
+                    reward: 40
+                }
+            ],
+            init: function() {
+                this.updateAchievementsUI();
+            },
+            updateAchievementsUI: function() {
+                const container = document.getElementById('achievements-list');
+                container.innerHTML = '';
+                
+                let unlockedCount = 0;
+                
+                this.list.forEach(achievement => {
+                    const isUnlocked = achievement.condition();
+                    if (isUnlocked && !userData.achievements.includes(achievement.id)) {
+                        userData.achievements.push(achievement.id);
+                        userData.coins += achievement.reward;
+                        showNotification(`Достижение разблокировано: ${achievement.name}! +${achievement.reward} коинов`, 'success');
+                    }
+                    
+                    if (isUnlocked) unlockedCount++;
+                    
+                    const achievementElement = document.createElement('div');
+                    achievementElement.className = 'shop-item';
+                    achievementElement.innerHTML = `
+                        <div class="shop-item-image">
+                            <i class="${achievement.icon}"></i>
+                        </div>
+                        <div class="shop-item-name">${achievement.name}</div>
+                        <div class="stat-label">${achievement.description}</div>
+                        <div class="shop-item-price" style="color: ${isUnlocked ? 'var(--success-color)' : 'var(--accent-color)'}">
+                            ${isUnlocked ? '✔ Разблокировано' : '🔒 Заблокировано'}
+                        </div>
+                        ${isUnlocked ? `<div class="stat-number">Награда: ${achievement.reward} коинов</div>` : ''}
+                    `;
+                    
+                    container.appendChild(achievementElement);
+                });
+                
+                document.getElementById('achievements-count').textContent = `${unlockedCount}/${this.list.length}`;
+                document.getElementById('achievements-progress').textContent = `${Math.round((unlockedCount / this.list.length) * 100)}%`;
+                
+                updateGlobalUI();
+                saveUserData();
+            }
+        };
+        
+        // Инициализация при загрузке страницы
+        window.onload = function() {
+            loadUserData();
             
-            const closeBtn = document.createElement('button');
-            closeBtn.textContent = 'OK';
-            closeBtn.style.marginTop = '15px';
-            closeBtn.style.padding = '8px 20px';
-            closeBtn.style.borderRadius = '20px';
-            closeBtn.style.background = 'var(--primary-color)';
-            closeBtn.style.color = 'white';
-            closeBtn.style.border = 'none';
-            closeBtn.style.cursor = 'pointer';
-            closeBtn.addEventListener('click', () => {
-                document.body.removeChild(overlay);
-            });
+            // Инициализация игр
+            hamsterGame.init();
+            fallingItemsGame.init();
+            memoryGame.init();
+            shop.init();
+            achievements.init();
             
-            alertBox.appendChild(closeBtn);
-            overlay.appendChild(alertBox);
-            document.body.appendChild(overlay);
-        }
-        
-        // Обработчик кнопки улучшения
-        upgradeBtn.addEventListener('click', upgradeHamster);
-        
-        // Обработчик кнопки завершения
-        finishBtn.addEventListener('click', endGame);
-        
-        // Инициализация игры
-        loadHamsterData();
-        placeHamster();
-        coinsDisplay.textContent = coins;
-        
-        // Для демо: добавляем кнопку сброса прогресса
-        if (!window.TelegramGameProxy) {
-            const resetBtn = document.createElement('button');
-            resetBtn.textContent = 'Сбросить прогресс';
-            resetBtn.style.marginTop = '20px';
-            resetBtn.style.background = 'var(--accent-color)';
-            resetBtn.addEventListener('click', () => {
-                localStorage.removeItem(`hamster_${userId}`);
-                location.reload();
-            });
-            document.getElementById('game-container').appendChild(resetBtn);
-        }
+            // Показываем первую игру
+            document.getElementById('hamster-game').style.display = 'block';
+            
+            // Для демо: добавляем кнопку сброса прогресса
+            if (!window.TelegramGameProxy) {
+                const resetBtn = document.createElement('button');
+                resetBtn.textContent = 'Сбросить прогресс';
+                resetBtn.style.margin = '20px auto';
+                resetBtn.style.display = 'block';
+                resetBtn.className = 'btn-danger';
+                resetBtn.addEventListener('click', () => {
+                    localStorage.removeItem(`user_${userId}`);
+                    location.reload();
+                });
+                document.getElementById('app-container').appendChild(resetBtn);
+            }
+        };
     </script>
 </body>
 </html>
