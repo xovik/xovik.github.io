@@ -3,176 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Супер Хомяк Игры</title>
+    <title>Хомяк Аркада</title>
     <script src="https://telegram.org/js/games.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Обновленные стили с новыми элементами */
         :root {
-            --primary-color: #FF9F43;
-            --secondary-color: #FECA57;
-            --accent-color: #FF6B6B;
-            --dark-color: #2D3436;
-            --light-color: #F5F6FA;
-            --success-color: #1DD1A1;
-            --info-color: #54A0FF;
-            --purple-color: #9B59B6;
-            --gold-color: #FFD700;
+            --primary: #FF7F50;
+            --primary-dark: #E86A40;
+            --secondary: #4D96FF;
+            --accent: #FF6B6B;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --dark: #2D3436;
+            --light: #F5F6FA;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #dfe9f3 100%);
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         
-        /* Остальные стили остаются такими же, но добавлены новые для новых игр */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         
-        /* Новые стили для инвентаря */
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        #app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Шапка */
+        #header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .user-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--light);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            min-width: 100px;
+        }
+        
+        .user-stat i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        .energy-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 3px;
+            overflow: hidden;
+        }
+        
+        .energy-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 100%;
+            transition: var(--transition);
+        }
+        
+        /* Основное содержимое */
+        #main-content {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        /* Меню игр */
+        #games-menu {
+            flex: 1;
+            min-width: 280px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        
+        .menu-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+        
+        .game-tab {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            color: var(--dark);
+            border-left: 4px solid transparent;
+        }
+        
+        .game-tab:hover {
+            background: rgba(77, 150, 255, 0.1);
+            transform: translateX(5px);
+            border-left-color: var(--secondary);
+        }
+        
+        .game-tab.active {
+            background: linear-gradient(90deg, rgba(77, 150, 255, 0.1), rgba(255, 107, 107, 0.1));
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .game-tab i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .game-tab .badge {
+            margin-left: auto;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        /* Область игры */
+        #game-display {
+            flex: 3;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #game-display::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        .game-title {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .game-description {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Общие стили игр */
+        .game-container {
+            display: none;
+        }
+        
+        .game-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border: 2px solid var(--light);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+        
+        .stat-value {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(255, 127, 80, 0.3);
+            min-width: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(30deg);
+            transition: var(--transition);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(255, 127, 80, 0.4);
+        }
+        
+        button:hover::after {
+            left: 100%;
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #CCCCCC;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none !important;
+        }
+        
+        button:disabled::after {
+            display: none;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 8px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+            color: var(--dark);
+        }
+        
+        .btn-warning:hover {
+            box-shadow: 0 8px 15px rgba(255, 193, 7, 0.4);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 8px 15px rgba(244, 67, 54, 0.4);
+        }
+        
+        .btn-info {
+            background: var(--secondary);
+            box-shadow: 0 4px 8px rgba(77, 150, 255, 0.3);
+        }
+        
+        .btn-info:hover {
+            box-shadow: 0 8px 15px rgba(77, 150, 255, 0.4);
+        }
+        
+        .btn-purple {
+            background: #9C27B0;
+            box-shadow: 0 4px 8px rgba(156, 39, 176, 0.3);
+        }
+        
+        .btn-purple:hover {
+            box-shadow: 0 8px 15px rgba(156, 39, 176, 0.4);
+        }
+        
+        /* Стили для игры с хомяком */
+        #hamster-game-area {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(to bottom, #E0F7FA, #B2EBF2);
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--primary);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        #hamster {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.1s, filter 0.2s;
+            user-select: none;
+            -webkit-user-drag: none;
+            z-index: 10;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+        }
+        
+        #hamster:hover {
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)) brightness(1.1);
+        }
+        
+        #hamster:active {
+            transform: scale(0.95);
+        }
+        
+        /* Стили для инвентаря */
         .inventory-items {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         
         .inventory-item {
             background: white;
             border-radius: 12px;
             padding: 15px;
-            border: 2px solid var(--light-color);
+            border: 2px solid var(--light);
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             text-align: center;
             position: relative;
+            transition: var(--transition);
+        }
+        
+        .inventory-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
         
         .inventory-item.equipped {
-            border-color: var(--success-color);
-            box-shadow: 0 0 0 2px var(--success-color);
+            border-color: var(--success);
+            box-shadow: 0 0 0 2px var(--success);
         }
         
         .inventory-item-image {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             margin: 0 auto 10px;
             background: #f5f5f5;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            color: var(--primary);
         }
         
         .inventory-item-name {
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 5px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+        }
+        
+        .inventory-item-desc {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 10px;
         }
         
         .inventory-item-count {
             position: absolute;
             top: 5px;
             right: 5px;
-            background: var(--primary-color);
+            background: var(--primary);
             color: white;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
         }
         
-        /* Стили для новой игры "Хомяк-бегун" */
-        #runner-game {
-            display: none;
+        /* Стили для магазина */
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
         
-        #runner-game-area {
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(to bottom, #E0F7FA, #B2EBF2);
-            border-radius: 15px;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-            border: 3px solid var(--secondary-color);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        .shop-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px solid var(--light);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
         }
         
-        #runner-hamster {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            bottom: 0;
-            left: 50px;
-            z-index: 10;
-            transition: transform 0.1s;
+        .shop-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
         
-        .runner-obstacle {
-            position: absolute;
-            bottom: 0;
-            width: 40px;
-            background-color: var(--accent-color);
-            z-index: 5;
-        }
-        
-        .runner-ground {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 20px;
-            background-color: var(--dark-color);
-            z-index: 1;
-        }
-        
-        /* Стили для новой игры "Хомяк в лабиринте" */
-        #maze-game {
-            display: none;
-        }
-        
-        #maze-game-area {
-            width: 100%;
-            height: 400px;
+        .shop-item-image {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 10px;
             background: #f5f5f5;
-            border-radius: 15px;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-            border: 3px solid var(--secondary-color);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
-        }
-        
-        .maze-wall {
-            position: absolute;
-            background-color: var(--dark-color);
-            z-index: 1;
-        }
-        
-        #maze-hamster {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: var(--primary-color);
             border-radius: 50%;
-            z-index: 2;
-            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+            border: 2px dashed var(--primary);
         }
         
-        .maze-cheese {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: var(--secondary-color);
-            border-radius: 50%;
-            z-index: 2;
+        .shop-item-name {
+            font-weight: 700;
+            margin-bottom: 5px;
         }
         
-        /* Стили для системы квестов */
+        .shop-item-desc {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 10px;
+            min-height: 40px;
+        }
+        
+        .shop-item-price {
+            color: var(--success);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .shop-item-button {
+            width: 100%;
+            padding: 8px;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        /* Стили для квестов */
         .quest-item {
             background: white;
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 15px;
-            border: 2px solid var(--light-color);
+            border: 2px solid var(--light);
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .quest-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
         
         .quest-header {
@@ -183,62 +600,87 @@
         }
         
         .quest-title {
-            font-weight: bold;
-            color: var(--dark-color);
+            font-weight: 700;
+            color: var(--dark);
             font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .quest-reward {
-            color: var(--success-color);
-            font-weight: bold;
+            color: var(--success);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .quest-progress {
-            height: 10px;
+            height: 8px;
             background: #ECF0F1;
-            border-radius: 5px;
+            border-radius: 4px;
             margin-top: 10px;
             overflow: hidden;
         }
         
         .quest-progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            background: linear-gradient(90deg, var(--primary), var(--accent));
             width: 0%;
-            transition: width 0.5s;
+            transition: width 0.5s ease-out;
         }
         
-        /* Стили для системы друзей */
+        /* Стили для друзей */
         .friend-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 15px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         
         .friend-item {
             background: white;
             border-radius: 12px;
             padding: 15px;
-            border: 2px solid var(--light-color);
+            border: 2px solid var(--light);
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             text-align: center;
+            transition: var(--transition);
+        }
+        
+        .friend-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
         
         .friend-avatar {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             margin: 0 auto 10px;
             background-color: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .friend-name {
-            font-weight: bold;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .friend-level {
+            font-size: 0.8rem;
+            background: var(--light);
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
             margin-bottom: 5px;
         }
         
@@ -247,7 +689,243 @@
             color: #666;
         }
         
-        /* Остальные существующие стили остаются без изменений */
+        /* Анимации */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes coinFlip {
+            0% { transform: rotateY(0); }
+            50% { transform: rotateY(180deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .bounce {
+            animation: bounce 0.5s infinite;
+        }
+        
+        .coin-flip {
+            animation: coinFlip 1s;
+        }
+        
+        .float {
+            animation: float 2s infinite ease-in-out;
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        /* Эффект при тапе */
+        .tap-effect {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 214, 0, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: tapAnimation 0.6s forwards;
+            z-index: 20;
+        }
+        
+        @keyframes tapAnimation {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.3s ease-out;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            font-size: 1.5rem;
+        }
+        
+        .notification.success {
+            border-left-color: var(--success);
+        }
+        
+        .notification.success i {
+            color: var(--success);
+        }
+        
+        .notification.error {
+            border-left-color: var(--danger);
+        }
+        
+        .notification.error i {
+            color: var(--danger);
+        }
+        
+        .notification.info {
+            border-left-color: var(--secondary);
+        }
+        
+        .notification.info i {
+            color: var(--secondary);
+        }
+        
+        /* Прогресс бар */
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease-out;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            #main-content {
+                flex-direction: column;
+            }
+            
+            #games-menu {
+                order: 2;
+                position: static;
+                max-height: none;
+            }
+            
+            #game-display {
+                order: 1;
+            }
+            
+            #header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .user-info {
+                justify-content: center;
+            }
+            
+            .game-tab {
+                justify-content: flex-start;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .user-stat {
+                min-width: calc(50% - 10px);
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .inventory-items, .shop-items, .friend-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Дополнительные декоративные элементы */
+        .decoration {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            opacity: 0;
+            z-index: 999;
+            animation: confettiFall 3s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -255,7 +933,7 @@
         <div id="header">
             <div class="logo">
                 <img src="https://i.imgur.com/JR9Z1pO.png" alt="Логотип">
-                <h1>Супер Хомяк Игры</h1>
+                <h1>Хомяк Аркада</h1>
             </div>
             <div class="user-info">
                 <div class="user-stat">
@@ -271,157 +949,192 @@
                     <span id="username">Игрок</span>
                 </div>
                 <div class="user-stat">
-                    <i class="fas fa-heart"></i>
+                    <i class="fas fa-bolt"></i>
                     <span id="energy">100/100</span>
+                    <div class="energy-bar">
+                        <div class="energy-progress" id="energy-progress"></div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div id="main-content">
             <div id="games-menu">
-                <div class="menu-title">🎮 Мини-игры</div>
+                <div class="menu-title">
+                    <i class="fas fa-gamepad"></i>
+                    Мини-игры
+                </div>
                 <div class="game-tab active" data-game="hamster-game">
-                    <i class="fas fa-paw"></i> Тап-Тап Хомяк
+                    <i class="fas fa-paw"></i>
+                    Тап-Тап Хомяк
+                    <span class="badge">NEW</span>
                 </div>
                 <div class="game-tab" data-game="falling-items-game">
-                    <i class="fas fa-apple-alt"></i> Ловец фруктов
+                    <i class="fas fa-apple-alt"></i>
+                    Ловец фруктов
                 </div>
                 <div class="game-tab" data-game="memory-game">
-                    <i class="fas fa-brain"></i> Игра на память
+                    <i class="fas fa-brain"></i>
+                    Игра на память
                 </div>
                 <div class="game-tab" data-game="runner-game">
-                    <i class="fas fa-running"></i> Хомяк-бегун
+                    <i class="fas fa-running"></i>
+                    Хомяк-бегун
                 </div>
                 <div class="game-tab" data-game="maze-game">
-                    <i class="fas fa-route"></i> Лабиринт
+                    <i class="fas fa-route"></i>
+                    Лабиринт
                 </div>
                 
-                <div class="menu-title" style="margin-top: 30px;">🛒 Магазин</div>
+                <div class="menu-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    Магазин
+                </div>
                 <div class="game-tab" data-game="shop">
-                    <i class="fas fa-shopping-cart"></i> Покупки
+                    <i class="fas fa-tshirt"></i>
+                    Покупки
                 </div>
                 <div class="game-tab" data-game="inventory">
-                    <i class="fas fa-backpack"></i> Инвентарь
+                    <i class="fas fa-backpack"></i>
+                    Инвентарь
                 </div>
                 
-                <div class="menu-title" style="margin-top: 30px;">🏆 Прогресс</div>
+                <div class="menu-title">
+                    <i class="fas fa-tasks"></i>
+                    Прогресс
+                </div>
                 <div class="game-tab" data-game="achievements">
-                    <i class="fas fa-medal"></i> Достижения
+                    <i class="fas fa-medal"></i>
+                    Достижения
+                    <span class="badge">5</span>
                 </div>
                 <div class="game-tab" data-game="quests">
-                    <i class="fas fa-tasks"></i> Квесты
+                    <i class="fas fa-scroll"></i>
+                    Квесты
                 </div>
                 <div class="game-tab" data-game="friends">
-                    <i class="fas fa-users"></i> Друзья
+                    <i class="fas fa-users"></i>
+                    Друзья
+                </div>
+                
+                <div class="menu-title">
+                    <i class="fas fa-cog"></i>
+                    Настройки
+                </div>
+                <div class="game-tab" data-game="settings">
+                    <i class="fas fa-sliders-h"></i>
+                    Настройки
                 </div>
             </div>
             
             <div id="game-display">
                 <!-- Игра с хомяком -->
-                <div id="hamster-game" class="game-container">
-                    <!-- Существующий контент остается без изменений -->
-                </div>
-                
-                <!-- Игра с падающими предметами -->
-                <div id="falling-items-game" class="game-container">
-                    <!-- Существующий контент остается без изменений -->
-                </div>
-                
-                <!-- Игра на память -->
-                <div id="memory-game" class="game-container">
-                    <!-- Существующий контент остается без изменений -->
-                </div>
-                
-                <!-- Новая игра: Хомяк-бегун -->
-                <div id="runner-game" class="game-container">
-                    <h2 class="game-title">🏃 Хомяк-бегун</h2>
-                    <div class="game-description">Помоги хомяку пробежать как можно дальше, перепрыгивая препятствия!</div>
+                <div id="hamster-game" class="game-container active">
+                    <h2 class="game-title">
+                        <i class="fas fa-paw"></i>
+                        Тап-Тап Хомяк
+                    </h2>
+                    <div class="game-description">Тапайте хомяка, зарабатывайте очки и улучшайте своего питомца!</div>
                     
                     <div class="stats-container">
                         <div class="stat-box">
-                            <div class="stat-title">Дистанция</div>
-                            <div id="runner-distance" class="stat-value">0</div>
+                            <div class="stat-title">Счет</div>
+                            <div id="hamster-score-display" class="stat-value">0</div>
                         </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Рекорд</div>
-                            <div id="runner-highscore" class="stat-value">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Скорость</div>
-                            <div id="runner-speed" class="stat-value">1x</div>
-                        </div>
-                    </div>
-                    
-                    <div id="runner-game-area">
-                        <div class="runner-ground"></div>
-                        <img id="runner-hamster" src="https://i.imgur.com/JR9Z1pO.png" alt="Хомяк">
-                    </div>
-                    
-                    <div class="buttons-container">
-                        <button id="runner-start-btn" class="btn-success">
-                            <i class="fas fa-play"></i> Начать
-                        </button>
-                        <button id="runner-jump-btn" class="btn-info" disabled>
-                            <i class="fas fa-arrow-up"></i> Прыжок
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Новая игра: Хомяк в лабиринте -->
-                <div id="maze-game" class="game-container">
-                    <h2 class="game-title">🧩 Хомяк в лабиринте</h2>
-                    <div class="game-description">Проведи хомяка через лабиринт к сыру, избегая стен!</div>
-                    
-                    <div class="stats-container">
                         <div class="stat-box">
                             <div class="stat-title">Время</div>
-                            <div id="maze-timer" class="stat-value">0</div>
+                            <div id="hamster-timer" class="stat-value">30</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-title">Собрано</div>
-                            <div id="maze-collected" class="stat-value">0/5</div>
+                            <div class="stat-title">Очки</div>
+                            <div id="hamster-coins-display" class="stat-value">0</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-title">Рекорд</div>
-                            <div id="maze-best-time" class="stat-value">0</div>
+                            <div id="hamster-highscore-display" class="stat-value">0</div>
                         </div>
                     </div>
                     
-                    <div id="maze-game-area"></div>
+                    <div id="hamster-game-area">
+                        <img id="hamster" src="https://i.imgur.com/JR9Z1pO.png" alt="Хомяк">
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Уровень: <span id="hamster-level">1</span></span>
+                            <span><span id="hamster-xp">0</span>/<span id="hamster-xp-needed">10</span></span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="hamster-level-progress"></div>
+                        </div>
+                    </div>
                     
                     <div class="buttons-container">
-                        <button id="maze-start-btn" class="btn-success">
-                            <i class="fas fa-play"></i> Начать
+                        <button id="hamster-start-btn" class="btn-success">
+                            <i class="fas fa-play"></i> Начать игру
                         </button>
-                        <button id="maze-reset-btn" class="btn-purple">
-                            <i class="fas fa-redo"></i> Сбросить
+                        <button id="hamster-upgrade-btn" class="btn-info" disabled>
+                            <i class="fas fa-level-up-alt"></i> Улучшить
+                        </button>
+                        <button id="hamster-finish-btn" class="btn-danger" disabled>
+                            <i class="fas fa-stop"></i> Завершить
                         </button>
                     </div>
                 </div>
                 
                 <!-- Магазин -->
                 <div id="shop" class="game-container">
-                    <h2 class="game-title">🛒 Магазин улучшений</h2>
+                    <h2 class="game-title">
+                        <i class="fas fa-shopping-cart"></i>
+                        Магазин улучшений
+                    </h2>
                     <div class="game-description">Покупайте улучшения для своих питомцев и игр!</div>
                     
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-title">Ваши коины</div>
+                            <div id="shop-coins" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Скидка</div>
+                            <div id="shop-discount" class="stat-value">0%</div>
+                        </div>
+                    </div>
+                    
                     <div class="shop-items">
-                        <!-- Существующие товары -->
                         <div class="shop-item" data-item="hamster-skin1">
                             <div class="shop-item-image">
                                 <i class="fas fa-paw"></i>
                             </div>
                             <div class="shop-item-name">Золотой хомяк</div>
-                            <div class="shop-item-price">100 коинов</div>
+                            <div class="shop-item-desc">Эксклюзивный золотой скин для вашего хомяка</div>
+                            <div class="shop-item-price">
+                                <i class="fas fa-coins"></i> 100
+                            </div>
                             <button class="shop-item-button btn-info">Купить</button>
                         </div>
                         
-                        <!-- Новые товары -->
                         <div class="shop-item" data-item="energy-boost">
                             <div class="shop-item-image">
                                 <i class="fas fa-bolt"></i>
                             </div>
                             <div class="shop-item-name">Энергия +50</div>
-                            <div class="shop-item-price">80 коинов</div>
+                            <div class="shop-item-desc">Мгновенно восстанавливает 50 единиц энергии</div>
+                            <div class="shop-item-price">
+                                <i class="fas fa-coins"></i> 80
+                            </div>
+                            <button class="shop-item-button btn-success">Купить</button>
+                        </div>
+                        
+                        <div class="shop-item" data-item="score-multiplier">
+                            <div class="shop-item-image">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="shop-item-name">Множитель очков</div>
+                            <div class="shop-item-desc">Увеличивает множитель очков на 0.5x</div>
+                            <div class="shop-item-price">
+                                <i class="fas fa-coins"></i> 200
+                            </div>
                             <button class="shop-item-button btn-info">Купить</button>
                         </div>
                         
@@ -430,16 +1143,10 @@
                                 <i class="fas fa-running"></i>
                             </div>
                             <div class="shop-item-name">Ускорение бега</div>
-                            <div class="shop-item-price">120 коинов</div>
-                            <button class="shop-item-button btn-info">Купить</button>
-                        </div>
-                        
-                        <div class="shop-item" data-item="maze-hint">
-                            <div class="shop-item-image">
-                                <i class="fas fa-lightbulb"></i>
+                            <div class="shop-item-desc">Увеличивает скорость в игре "Хомяк-бегун"</div>
+                            <div class="shop-item-price">
+                                <i class="fas fa-coins"></i> 120
                             </div>
-                            <div class="shop-item-name">Подсказка лабиринта</div>
-                            <div class="shop-item-price">60 коинов</div>
                             <button class="shop-item-button btn-info">Купить</button>
                         </div>
                     </div>
@@ -447,7 +1154,10 @@
                 
                 <!-- Инвентарь -->
                 <div id="inventory" class="game-container">
-                    <h2 class="game-title">🎒 Мой инвентарь</h2>
+                    <h2 class="game-title">
+                        <i class="fas fa-backpack"></i>
+                        Мой инвентарь
+                    </h2>
                     <div class="game-description">Используйте предметы для улучшения игрового опыта</div>
                     
                     <div class="stats-container">
@@ -463,111 +1173,62 @@
                     
                     <div class="inventory-items" id="inventory-items-list">
                         <!-- Предметы будут добавляться динамически -->
-                    </div>
-                </div>
-                
-                <!-- Достижения -->
-                <div id="achievements" class="game-container">
-                    <h2 class="game-title">🏆 Мои достижения</h2>
-                    <div class="game-description">Зарабатывайте достижения, играя в мини-игры!</div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-box">
-                            <div class="stat-title">Достижений</div>
-                            <div id="achievements-count" class="stat-value">0/20</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Прогресс</div>
-                            <div id="achievements-progress" class="stat-value">0%</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Награды</div>
-                            <div id="achievements-rewards" class="stat-value">0</div>
-                        </div>
-                    </div>
-                    
-                    <div class="shop-items" id="achievements-list">
-                        <!-- Достижения будут добавляться динамически -->
-                    </div>
-                </div>
-                
-                <!-- Квесты -->
-                <div id="quests" class="game-container">
-                    <h2 class="game-title">📜 Ежедневные квесты</h2>
-                    <div class="game-description">Выполняйте квесты для получения наград!</div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-box">
-                            <div class="stat-title">Выполнено</div>
-                            <div id="quests-completed" class="stat-value">0/5</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Награда</div>
-                            <div id="quests-rewards" class="stat-value">0</div>
-                        </div>
-                    </div>
-                    
-                    <div id="quests-list">
-                        <div class="quest-item">
-                            <div class="quest-header">
-                                <div class="quest-title">Тапни хомяка 50 раз</div>
-                                <div class="quest-reward">+50 коинов</div>
+                        <div class="inventory-item">
+                            <div class="inventory-item-image">
+                                <i class="fas fa-box-open"></i>
                             </div>
-                            <div class="quest-progress">
-                                <div class="quest-progress-bar" style="width: 0%"></div>
+                            <div class="inventory-item-name">Инвентарь пуст</div>
+                            <div class="inventory-item-desc">Посетите магазин, чтобы приобрести предметы</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Другие игровые разделы (memory-game, runner-game, maze-game и т.д.) -->
+                <!-- ... -->
+                
+                <!-- Настройки -->
+                <div id="settings" class="game-container">
+                    <h2 class="game-title">
+                        <i class="fas fa-sliders-h"></i>
+                        Настройки
+                    </h2>
+                    <div class="game-description">Настройте игру под свои предпочтения</div>
+                    
+                    <div class="settings-options">
+                        <div class="setting-item">
+                            <h3>Звуки</h3>
+                            <div class="setting-control">
+                                <button id="sound-toggle" class="btn-info">
+                                    <i class="fas fa-volume-up"></i> Вкл
+                                </button>
                             </div>
                         </div>
                         
-                        <div class="quest-item">
-                            <div class="quest-header">
-                                <div class="quest-title">Пробеги 500 метров</div>
-                                <div class="quest-reward">+30 коинов</div>
-                            </div>
-                            <div class="quest-progress">
-                                <div class="quest-progress-bar" style="width: 0%"></div>
+                        <div class="setting-item">
+                            <h3>Музыка</h3>
+                            <div class="setting-control">
+                                <button id="music-toggle" class="btn-info">
+                                    <i class="fas fa-music"></i> Вкл
+                                </button>
                             </div>
                         </div>
                         
-                        <div class="quest-item">
-                            <div class="quest-header">
-                                <div class="quest-title">Собери 5 сыров</div>
-                                <div class="quest-reward">+40 коинов</div>
-                            </div>
-                            <div class="quest-progress">
-                                <div class="quest-progress-bar" style="width: 0%"></div>
+                        <div class="setting-item">
+                            <h3>Уведомления</h3>
+                            <div class="setting-control">
+                                <button id="notifications-toggle" class="btn-info">
+                                    <i class="fas fa-bell"></i> Вкл
+                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Друзья -->
-                <div id="friends" class="game-container">
-                    <h2 class="game-title">👥 Мои друзья</h2>
-                    <div class="game-description">Соревнуйтесь с друзьями и получайте бонусы!</div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-box">
-                            <div class="stat-title">Друзей</div>
-                            <div id="friends-count" class="stat-value">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Бонус</div>
-                            <div id="friends-bonus" class="stat-value">0%</div>
-                        </div>
-                    </div>
-                    
-                    <button id="invite-friends-btn" class="btn-purple" style="margin-bottom: 20px;">
-                        <i class="fas fa-user-plus"></i> Пригласить друзей
-                    </button>
-                    
-                    <div class="friend-list" id="friends-list">
-                        <!-- Друзья будут добавляться динамически -->
-                        <div class="friend-item">
-                            <div class="friend-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="friend-name">Нет друзей</div>
-                            <div class="friend-status">Пригласите друзей для соревнований</div>
+                        
+                        <div class="buttons-container" style="margin-top: 30px;">
+                            <button id="save-settings-btn" class="btn-success">
+                                <i class="fas fa-save"></i> Сохранить
+                            </button>
+                            <button id="reset-progress-btn" class="btn-danger">
+                                <i class="fas fa-trash"></i> Сбросить прогресс
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -576,7 +1237,7 @@
     </div>
 
     <script>
-        // Обновленные глобальные переменные
+        // Глобальные переменные
         const userData = {
             coins: 0,
             score: 0,
@@ -584,42 +1245,32 @@
             energy: 100,
             maxEnergy: 100,
             lastEnergyUpdate: Date.now(),
+            settings: {
+                sound: true,
+                music: true,
+                notifications: true
+            },
             unlockedItems: [],
-            achievements: [],
             inventory: {},
             equippedItems: {},
+            achievements: [],
             quests: {
                 tapHamster: { target: 50, progress: 0, reward: 50, completed: false },
-                runDistance: { target: 500, progress: 0, reward: 30, completed: false },
-                collectCheese: { target: 5, progress: 0, reward: 40, completed: false }
+                collectCoins: { target: 100, progress: 0, reward: 100, completed: false },
+                playGames: { target: 5, progress: 0, reward: 50, completed: false }
             },
             friends: [],
             hamster: {
                 name: "Хомяк",
                 level: 1,
-                income: 5,
-                multiplier: 1,
                 xp: 0,
                 xpToNextLevel: 10,
+                income: 5,
+                multiplier: 1,
                 highscore: 0,
                 skin: "default"
             },
-            fallingGame: {
-                highscore: 0
-            },
-            memoryGame: {
-                bestTime: 0,
-                bestMoves: 0
-            },
-            runnerGame: {
-                highscore: 0,
-                speedBoost: 1,
-                distance: 0
-            },
-            mazeGame: {
-                bestTime: 0,
-                cheesesCollected: 0
-            }
+            // Другие игровые данные...
         };
         
         // Получаем данные пользователя из URL
@@ -631,38 +1282,47 @@
         function loadUserData() {
             const savedData = localStorage.getItem(`user_${userId}`);
             if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                
-                // Обновляем только существующие свойства, чтобы избежать перезаписи новых полей
-                for (const key in parsedData) {
-                    if (userData.hasOwnProperty(key)) {
-                        if (typeof userData[key] === 'object' && userData[key] !== null) {
-                            Object.assign(userData[key], parsedData[key]);
-                        } else {
-                            userData[key] = parsedData[key];
-                        }
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    Object.assign(userData, parsedData);
+                    
+                    // Восстанавливаем настройки
+                    if (parsedData.settings) {
+                        Object.assign(userData.settings, parsedData.settings);
                     }
+                    
+                    // Восстанавливаем энергию
+                    updateEnergy();
+                    
+                    showNotification("Данные успешно загружены!", "success");
+                } catch (e) {
+                    console.error("Ошибка загрузки данных:", e);
+                    showNotification("Ошибка загрузки данных. Создан новый профиль.", "error");
                 }
             }
             
-            // Восстанавливаем энергию
-            this.updateEnergy();
             updateGlobalUI();
+            updateSettingsUI();
         }
         
         // Сохранение данных
         function saveUserData() {
-            localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
-            
-            // Если игра запущена в Telegram, отправляем данные на сервер
-            if (window.TelegramGameProxy) {
-                TelegramGameProxy.sendData({
-                    user_id: userId,
-                    coins: userData.coins,
-                    score: userData.score,
-                    hamster_level: userData.hamster.level,
-                    last_update: Date.now()
-                });
+            try {
+                localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
+                
+                // Если игра запущена в Telegram, отправляем данные на сервер
+                if (window.TelegramGameProxy) {
+                    TelegramGameProxy.sendData({
+                        user_id: userId,
+                        coins: userData.coins,
+                        score: userData.score,
+                        energy: userData.energy,
+                        last_update: Date.now()
+                    });
+                }
+            } catch (e) {
+                console.error("Ошибка сохранения данных:", e);
+                showNotification("Ошибка сохранения данных", "error");
             }
         }
         
@@ -679,6 +1339,7 @@
             }
             
             document.getElementById('energy').textContent = `${userData.energy}/${userData.maxEnergy}`;
+            document.getElementById('energy-progress').style.width = `${(userData.energy / userData.maxEnergy) * 100}%`;
         }
         
         // Обновление глобального UI
@@ -687,13 +1348,164 @@
             document.getElementById('global-score').textContent = userData.score;
             document.getElementById('username').textContent = userData.username;
             document.getElementById('energy').textContent = `${userData.energy}/${userData.maxEnergy}`;
+            document.getElementById('energy-progress').style.width = `${(userData.energy / userData.maxEnergy) * 100}%`;
+            
+            // Обновляем магазин
+            document.getElementById('shop-coins').textContent = userData.coins;
+            
+            // Обновляем инвентарь
+            updateInventoryUI();
             
             // Обновляем квесты
-            this.updateQuestsUI();
+            updateQuestsUI();
+        }
+        
+        // Обновление UI инвентаря
+        function updateInventoryUI() {
+            const container = document.getElementById('inventory-items-list');
+            container.innerHTML = '';
+            
+            let itemCount = 0;
+            let equippedCount = 0;
+            
+            // Добавляем предметы из инвентаря
+            for (const [itemId, quantity] of Object.entries(userData.inventory)) {
+                if (quantity > 0) {
+                    itemCount += quantity;
+                    const isEquipped = Object.values(userData.equippedItems).includes(itemId);
+                    if (isEquipped) equippedCount++;
+                    
+                    const itemElement = createInventoryItem(itemId, quantity, isEquipped);
+                    container.appendChild(itemElement);
+                }
+            }
+            
+            // Если инвентарь пуст
+            if (itemCount === 0) {
+                container.innerHTML = `
+                    <div class="inventory-item">
+                        <div class="inventory-item-image">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <div class="inventory-item-name">Инвентарь пуст</div>
+                        <div class="inventory-item-desc">Посетите магазин, чтобы приобрести предметы</div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('inventory-count').textContent = itemCount;
+            document.getElementById('equipped-count').textContent = equippedCount;
+        }
+        
+        // Создание элемента инвентаря
+        function createInventoryItem(itemId, quantity, isEquipped = false) {
+            const item = getItemData(itemId);
+            if (!item) return null;
+            
+            const itemElement = document.createElement('div');
+            itemElement.className = `inventory-item ${isEquipped ? 'equipped' : ''}`;
+            itemElement.innerHTML = `
+                <div class="inventory-item-image">
+                    <i class="${item.icon}"></i>
+                </div>
+                <div class="inventory-item-name">${item.name}</div>
+                <div class="inventory-item-desc">${item.description}</div>
+                ${quantity > 1 ? `<div class="inventory-item-count">${quantity}</div>` : ''}
+                <div class="buttons-container" style="margin-top: 10px; justify-content: center;">
+                    ${item.type === 'consumable' ? 
+                        `<button class="shop-item-button btn-success use-item" data-item="${itemId}">
+                            <i class="fas fa-arrow-up"></i> Использовать
+                        </button>` : 
+                        (isEquipped ? 
+                            `<button class="shop-item-button btn-danger unequip-item" data-item="${itemId}">
+                                <i class="fas fa-arrow-down"></i> Снять
+                            </button>` : 
+                            `<button class="shop-item-button btn-info equip-item" data-item="${itemId}">
+                                <i class="fas fa-arrow-down"></i> Надеть
+                            </button>`)
+                    }
+                </div>
+            `;
+            
+            return itemElement;
+        }
+        
+        // Получение данных о предмете
+        function getItemData(itemId) {
+            const items = {
+                'energy-potion': {
+                    name: 'Зелье энергии',
+                    description: 'Восстанавливает 20 энергии',
+                    icon: 'fas fa-bolt',
+                    type: 'consumable'
+                },
+                'hamster-skin1': {
+                    name: 'Золотой хомяк',
+                    description: 'Эксклюзивный золотой скин',
+                    icon: 'fas fa-paw',
+                    type: 'cosmetic',
+                    slot: 'hamster-skin'
+                },
+                'score-multiplier': {
+                    name: 'Множитель очков',
+                    description: 'Увеличивает множитель очков на 0.5x',
+                    icon: 'fas fa-times',
+                    type: 'upgrade'
+                }
+            };
+            
+            return items[itemId] || null;
+        }
+        
+        // Обновление UI настроек
+        function updateSettingsUI() {
+            document.getElementById('sound-toggle').innerHTML = `
+                <i class="fas fa-volume-${userData.settings.sound ? 'up' : 'mute'}"></i> 
+                ${userData.settings.sound ? 'Вкл' : 'Выкл'}
+            `;
+            
+            document.getElementById('music-toggle').innerHTML = `
+                <i class="fas fa-${userData.settings.music ? 'music' : 'bell-slash'}"></i> 
+                ${userData.settings.music ? 'Вкл' : 'Выкл'}
+            `;
+            
+            document.getElementById('notifications-toggle').innerHTML = `
+                <i class="fas fa-bell${userData.settings.notifications ? '' : '-slash'}"></i> 
+                ${userData.settings.notifications ? 'Вкл' : 'Выкл'}
+            `;
+        }
+        
+        // Обновление UI квестов
+        function updateQuestsUI() {
+            let completedCount = 0;
+            let totalRewards = 0;
+            
+            // Проверяем выполнение квестов
+            for (const [questId, quest] of Object.entries(userData.quests)) {
+                if (!quest.completed && quest.progress >= quest.target) {
+                    quest.completed = true;
+                    userData.coins += quest.reward;
+                    totalRewards += quest.reward;
+                    
+                    if (userData.settings.notifications) {
+                        showNotification(`Квест выполнен! Получено ${quest.reward} коинов`, "success");
+                        createConfettiEffect();
+                    }
+                }
+                
+                if (quest.completed) completedCount++;
+            }
+            
+            if (totalRewards > 0) {
+                updateGlobalUI();
+                saveUserData();
+            }
         }
         
         // Показ уведомления
         function showNotification(message, type = "info") {
+            if (!userData.settings.notifications) return;
+            
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             
@@ -724,6 +1536,341 @@
             }, 3000);
         }
         
+        // Эффект конфетти
+        function createConfettiEffect(count = 50) {
+            for (let i = 0; i < count; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        function getRandomColor() {
+            const colors = [
+                '#FF7F50', '#4D96FF', '#FF6B6B', 
+                '#4CAF50', '#FFC107', '#9C27B0'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        // Инициализация игры с хомяком
+        const hamsterGame = {
+            elements: {
+                hamster: document.getElementById('hamster'),
+                gameArea: document.getElementById('hamster-game-area'),
+                scoreDisplay: document.getElementById('hamster-score-display'),
+                timerDisplay: document.getElementById('hamster-timer'),
+                coinsDisplay: document.getElementById('hamster-coins-display'),
+                highscoreDisplay: document.getElementById('hamster-highscore-display'),
+                levelDisplay: document.getElementById('hamster-level'),
+                xpDisplay: document.getElementById('hamster-xp'),
+                xpNeededDisplay: document.getElementById('hamster-xp-needed'),
+                levelProgress: document.getElementById('hamster-level-progress'),
+                startBtn: document.getElementById('hamster-start-btn'),
+                upgradeBtn: document.getElementById('hamster-upgrade-btn'),
+                finishBtn: document.getElementById('hamster-finish-btn')
+            },
+            variables: {
+                score: 0,
+                timeLeft: 30,
+                gameInterval: null,
+                timerInterval: null,
+                isGameRunning: false,
+                tapCount: 0
+            },
+            init: function() {
+                this.updateHamsterUI();
+                this.elements.hamster.addEventListener('click', this.handleHamsterClick.bind(this));
+                this.elements.startBtn.addEventListener('click', this.startGame.bind(this));
+                this.elements.upgradeBtn.addEventListener('click', this.upgradeHamster.bind(this));
+                this.elements.finishBtn.addEventListener('click', this.endGame.bind(this));
+                this.placeHamster();
+            },
+            placeHamster: function() {
+                const maxX = this.elements.gameArea.offsetWidth - this.elements.hamster.offsetWidth;
+                const maxY = this.elements.gameArea.offsetHeight - this.elements.hamster.offsetHeight;
+                
+                this.elements.hamster.style.left = Math.random() * maxX + 'px';
+                this.elements.hamster.style.top = Math.random() * maxY + 'px';
+            },
+            createTapEffect: function(x, y) {
+                const effect = document.createElement('div');
+                effect.className = 'tap-effect';
+                effect.style.left = `${x - 20}px`;
+                effect.style.top = `${y - 20}px`;
+                effect.style.backgroundColor = getRandomColor();
+                this.elements.gameArea.appendChild(effect);
+                
+                setTimeout(() => {
+                    effect.remove();
+                }, 600);
+            },
+            handleHamsterClick: function(e) {
+                if (!this.variables.isGameRunning) return;
+                
+                const rect = this.elements.hamster.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                this.createTapEffect(x, y);
+                
+                // Увеличиваем счет с учетом множителя
+                this.variables.score += userData.hamster.multiplier;
+                this.variables.tapCount++;
+                
+                this.elements.scoreDisplay.textContent = Math.floor(this.variables.score);
+                
+                // Анимация хомяка
+                this.elements.hamster.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    this.elements.hamster.style.transform = 'scale(1)';
+                }, 100);
+                
+                // Перемещаем хомяка
+                this.placeHamster();
+                
+                // Обновляем прогресс квеста
+                userData.quests.tapHamster.progress = this.variables.tapCount;
+                updateQuestsUI();
+            },
+            updateTimer: function() {
+                this.variables.timeLeft--;
+                this.elements.timerDisplay.textContent = this.variables.timeLeft;
+                
+                if (this.variables.timeLeft <= 0) {
+                    this.endGame();
+                }
+            },
+            startGame: function() {
+                if (this.variables.isGameRunning || userData.energy < 10) {
+                    if (userData.energy < 10) {
+                        showNotification("Недостаточно энергии!", "error");
+                    }
+                    return;
+                }
+                
+                // Расходуем энергию
+                userData.energy -= 10;
+                updateGlobalUI();
+                
+                // Сбрасываем переменные
+                this.variables.score = 0;
+                this.variables.timeLeft = 30;
+                this.variables.tapCount = 0;
+                
+                // Обновляем UI
+                this.elements.scoreDisplay.textContent = '0';
+                this.elements.timerDisplay.textContent = '30';
+                this.elements.startBtn.disabled = true;
+                this.elements.upgradeBtn.disabled = true;
+                this.elements.finishBtn.disabled = false;
+                
+                // Размещаем хомяка
+                this.placeHamster();
+                
+                // Запускаем таймер
+                this.variables.timerInterval = setInterval(this.updateTimer.bind(this), 1000);
+                
+                // Анимация начала игры
+                this.elements.gameArea.style.boxShadow = 'inset 0 0 30px rgba(255, 214, 0, 0.5)';
+                setTimeout(() => {
+                    this.elements.gameArea.style.boxShadow = 'inset 0 0 20px rgba(0,0,0,0.1)';
+                }, 1000);
+                
+                this.variables.isGameRunning = true;
+                
+                // Обновляем прогресс квеста
+                userData.quests.playGames.progress++;
+                updateQuestsUI();
+            },
+            endGame: function() {
+                clearInterval(this.variables.timerInterval);
+                this.variables.isGameRunning = false;
+                
+                this.elements.startBtn.disabled = false;
+                this.elements.finishBtn.disabled = true;
+                
+                // Начисляем награды
+                const coinsEarned = Math.floor(this.variables.score / 2);
+                userData.coins += coinsEarned;
+                userData.score += this.variables.score;
+                
+                // Обновляем рекорд
+                if (this.variables.score > userData.hamster.highscore) {
+                    userData.hamster.highscore = this.variables.score;
+                    this.elements.highscoreDisplay.textContent = userData.hamster.highscore;
+                }
+                
+                // Добавляем опыт
+                userData.hamster.xp += Math.floor(this.variables.score / 5);
+                this.checkLevelUp();
+                
+                updateGlobalUI();
+                this.updateHamsterUI();
+                saveUserData();
+                
+                // Показываем результаты
+                const resultMessage = `Игра окончена!\n\n🏆 Счет: ${this.variables.score}\n💰 Получено коинов: ${coinsEarned}\n\nУровень хомяка: ${userData.hamster.level}`;
+                
+                if (window.TelegramGameProxy) {
+                    alert(resultMessage);
+                } else {
+                    showNotification(resultMessage, "success");
+                    createConfettiEffect(30);
+                }
+            },
+            updateHamsterUI: function() {
+                this.elements.levelDisplay.textContent = userData.hamster.level;
+                this.elements.xpDisplay.textContent = userData.hamster.xp;
+                this.elements.xpNeededDisplay.textContent = userData.hamster.xpToNextLevel;
+                this.elements.levelProgress.style.width = `${(userData.hamster.xp / userData.hamster.xpToNextLevel) * 100}%`;
+                this.elements.highscoreDisplay.textContent = userData.hamster.highscore;
+                
+                const upgradeCost = this.calculateUpgradeCost();
+                this.elements.upgradeBtn.innerHTML = `
+                    <i class="fas fa-level-up-alt"></i> Улучшить (${upgradeCost} коинов)
+                `;
+                this.elements.upgradeBtn.disabled = userData.coins < upgradeCost;
+            },
+            calculateUpgradeCost: function() {
+                return Math.floor(50 * Math.pow(1.2, userData.hamster.level));
+            },
+            upgradeHamster: function() {
+                const upgradeCost = this.calculateUpgradeCost();
+                
+                if (userData.coins >= upgradeCost) {
+                    userData.coins -= upgradeCost;
+                    userData.hamster.level++;
+                    userData.hamster.income += 2;
+                    
+                    // Сбрасываем опыт при повышении уровня
+                    userData.hamster.xp = 0;
+                    userData.hamster.xpToNextLevel = Math.floor(userData.hamster.xpToNextLevel * 1.5);
+                    
+                    updateGlobalUI();
+                    this.updateHamsterUI();
+                    saveUserData();
+                    
+                    // Анимация
+                    this.elements.hamster.classList.add('bounce');
+                    setTimeout(() => {
+                        this.elements.hamster.classList.remove('bounce');
+                    }, 1000);
+                    
+                    showNotification(`Хомяк улучшен до уровня ${userData.hamster.level}!`, "success");
+                    createConfettiEffect(20);
+                } else {
+                    showNotification("Недостаточно коинов для улучшения!", "error");
+                }
+            },
+            checkLevelUp: function() {
+                if (userData.hamster.xp >= userData.hamster.xpToNextLevel) {
+                    userData.hamster.level++;
+                    userData.hamster.xp = 0;
+                    userData.hamster.xpToNextLevel = Math.floor(userData.hamster.xpToNextLevel * 1.5);
+                    userData.hamster.multiplier += 0.1;
+                    
+                    showNotification(`🎉 Новый уровень! Теперь вы ${userData.hamster.level} уровня`, "success");
+                    createConfettiEffect(30);
+                }
+            }
+        };
+        
+        // Инициализация магазина
+        const shopSystem = {
+            init: function() {
+                document.querySelectorAll('.shop-item-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const itemId = e.target.closest('.shop-item').getAttribute('data-item');
+                        this.purchaseItem(itemId);
+                    });
+                });
+            },
+            purchaseItem: function(itemId) {
+                const item = getItemData(itemId);
+                if (!item) return;
+                
+                const price = this.getItemPrice(itemId);
+                
+                if (userData.coins >= price) {
+                    userData.coins -= price;
+                    
+                    // Добавляем предмет в инвентарь
+                    if (!userData.inventory[itemId]) {
+                        userData.inventory[itemId] = 0;
+                    }
+                    userData.inventory[itemId]++;
+                    
+                    // Если предмет можно надеть сразу (например, скин)
+                    if (item.type === 'cosmetic' && !userData.equippedItems[item.slot]) {
+                        userData.equippedItems[item.slot] = itemId;
+                    }
+                    
+                    updateGlobalUI();
+                    saveUserData();
+                    
+                    showNotification(`Вы купили ${item.name}!`, "success");
+                    
+                    // Специальные эффекты для некоторых предметов
+                    if (itemId === 'energy-potion') {
+                        userData.energy = Math.min(userData.maxEnergy, userData.energy + 20);
+                        updateGlobalUI();
+                    }
+                } else {
+                    showNotification("Недостаточно коинов для покупки!", "error");
+                }
+            },
+            getItemPrice: function(itemId) {
+                const prices = {
+                    'energy-potion': 80,
+                    'hamster-skin1': 100,
+                    'score-multiplier': 200,
+                    'runner-boost': 120
+                };
+                return prices[itemId] || 0;
+            }
+        };
+        
+        // Инициализация настроек
+        const settingsSystem = {
+            init: function() {
+                document.getElementById('sound-toggle').addEventListener('click', () => {
+                    userData.settings.sound = !userData.settings.sound;
+                    updateSettingsUI();
+                });
+                
+                document.getElementById('music-toggle').addEventListener('click', () => {
+                    userData.settings.music = !userData.settings.music;
+                    updateSettingsUI();
+                });
+                
+                document.getElementById('notifications-toggle').addEventListener('click', () => {
+                    userData.settings.notifications = !userData.settings.notifications;
+                    updateSettingsUI();
+                });
+                
+                document.getElementById('save-settings-btn').addEventListener('click', () => {
+                    saveUserData();
+                    showNotification("Настройки сохранены!", "success");
+                });
+                
+                document.getElementById('reset-progress-btn').addEventListener('click', () => {
+                    if (confirm("Вы уверены, что хотите сбросить весь прогресс? Это действие нельзя отменить!")) {
+                        localStorage.removeItem(`user_${userId}`);
+                        location.reload();
+                    }
+                });
+            }
+        };
+        
         // Переключение между играми
         document.querySelectorAll('.game-tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -734,871 +1881,108 @@
                 
                 // Скрываем все игры
                 document.querySelectorAll('.game-container').forEach(game => {
-                    game.style.display = 'none';
+                    game.classList.remove('active');
                 });
                 
                 // Показываем выбранную игру
                 const gameId = tab.getAttribute('data-game');
-                document.getElementById(gameId).style.display = 'block';
-                
-                // Инициализация игр при первом открытии
-                if (gameId === 'memory-game' && !memoryGame.initialized) {
-                    memoryGame.initMemoryGame();
-                    memoryGame.initialized = true;
-                } else if (gameId === 'maze-game' && !mazeGame.initialized) {
-                    mazeGame.initMaze();
-                    mazeGame.initialized = true;
-                } else if (gameId === 'inventory') {
-                    inventory.updateInventoryUI();
-                } else if (gameId === 'achievements') {
-                    achievements.updateAchievementsUI();
-                } else if (gameId === 'quests') {
-                    this.updateQuestsUI();
-                }
+                document.getElementById(gameId).classList.add('active');
             });
         });
         
-        // ==================== ИГРА С ХОМЯКОМ ====================
-        // (Остается без изменений, но добавляем использование энергии)
-        
-        // ==================== НОВАЯ ИГРА: ХОМЯК-БЕГУН ====================
-        const runnerGame = {
-            elements: {
-                gameArea: document.getElementById('runner-game-area'),
-                hamster: document.getElementById('runner-hamster'),
-                distanceDisplay: document.getElementById('runner-distance'),
-                highscoreDisplay: document.getElementById('runner-highscore'),
-                speedDisplay: document.getElementById('runner-speed'),
-                startBtn: document.getElementById('runner-start-btn'),
-                jumpBtn: document.getElementById('runner-jump-btn')
-            },
-            variables: {
-                isRunning: false,
-                isJumping: false,
-                speed: 1,
-                distance: 0,
-                obstacles: [],
-                gameInterval: null,
-                obstacleInterval: null,
-                gravity: 0.4,
-                velocity: 0,
-                jumpPower: 10,
-                groundPosition: 0
-            },
-            init: function() {
-                this.elements.startBtn.addEventListener('click', this.startGame.bind(this));
-                this.elements.jumpBtn.addEventListener('click', this.jump.bind(this));
-                
-                // Обработчики клавиатуры
-                document.addEventListener('keydown', (e) => {
-                    if (e.code === 'Space' && this.variables.isRunning) {
-                        this.jump();
-                    }
-                });
-                
-                // Обработчики для сенсорных устройств
-                this.elements.gameArea.addEventListener('touchstart', () => {
-                    if (this.variables.isRunning) {
-                        this.jump();
-                    }
-                });
-                
-                // Устанавливаем позицию земли
-                const ground = document.querySelector('.runner-ground');
-                this.variables.groundPosition = this.elements.gameArea.offsetHeight - ground.offsetHeight;
-                this.elements.hamster.style.bottom = '0px';
-                
-                // Загружаем рекорд
-                this.elements.highscoreDisplay.textContent = userData.runnerGame.highscore;
-            },
-            startGame: function() {
-                if (this.variables.isRunning || userData.energy < 10) {
-                    if (userData.energy < 10) {
-                        showNotification('Недостаточно энергии!', 'error');
-                    }
-                    return;
-                }
-                
-                // Расходуем энергию
-                userData.energy -= 10;
-                updateGlobalUI();
-                
-                // Сбрасываем переменные
-                this.variables.isRunning = true;
-                this.variables.distance = 0;
-                this.variables.speed = userData.runnerGame.speedBoost || 1;
-                this.variables.obstacles = [];
-                
-                // Очищаем игровое поле от старых препятствий
-                document.querySelectorAll('.runner-obstacle').forEach(obs => obs.remove());
-                
-                // Обновляем UI
-                this.elements.distanceDisplay.textContent = '0';
-                this.elements.speedDisplay.textContent = `${this.variables.speed}x`;
-                this.elements.startBtn.disabled = true;
-                this.elements.jumpBtn.disabled = false;
-                
-                // Запускаем игровой цикл
-                this.variables.gameInterval = setInterval(this.updateGame.bind(this), 16);
-                this.variables.obstacleInterval = setInterval(this.createObstacle.bind(this), 2000 / this.variables.speed);
-            },
-            createObstacle: function() {
-                if (!this.variables.isRunning) return;
-                
-                const obstacle = document.createElement('div');
-                obstacle.className = 'runner-obstacle';
-                
-                const height = 30 + Math.random() * 50;
-                obstacle.style.height = `${height}px`;
-                obstacle.style.right = '0px';
-                
-                this.elements.gameArea.appendChild(obstacle);
-                this.variables.obstacles.push({
-                    element: obstacle,
-                    passed: false
-                });
-            },
-            jump: function() {
-                if (this.variables.isJumping) return;
-                
-                this.variables.isJumping = true;
-                this.variables.velocity = -this.variables.jumpPower;
-                
-                // Анимация прыжка
-                this.elements.hamster.style.transform = 'rotate(-20deg)';
-            },
-            updateGame: function() {
-                if (!this.variables.isRunning) return;
-                
-                // Увеличиваем дистанцию
-                this.variables.distance += 0.1 * this.variables.speed;
-                this.elements.distanceDisplay.textContent = Math.floor(this.variables.distance);
-                
-                // Обновляем позицию хомяка (гравитация)
-                if (this.variables.isJumping) {
-                    this.variables.velocity += this.variables.gravity;
-                    const currentBottom = parseInt(this.elements.hamster.style.bottom) || 0;
-                    const newBottom = currentBottom + this.variables.velocity;
-                    
-                    if (newBottom <= 0) {
-                        this.elements.hamster.style.bottom = '0px';
-                        this.variables.isJumping = false;
-                        this.variables.velocity = 0;
-                        this.elements.hamster.style.transform = 'rotate(0)';
-                    } else {
-                        this.elements.hamster.style.bottom = `${newBottom}px`;
-                    }
-                }
-                
-                // Обновляем позиции препятствий
-                this.variables.obstacles.forEach((obstacle, index) => {
-                    const currentRight = parseInt(obstacle.element.style.right) || 0;
-                    const newRight = currentRight + 5 * this.variables.speed;
-                    obstacle.element.style.right = `${newRight}px`;
-                    
-                    // Проверка столкновения
-                    if (this.checkCollision(obstacle.element)) {
-                        this.endGame();
-                        return;
-                    }
-                    
-                    // Удаляем препятствия, которые вышли за экран
-                    if (newRight > this.elements.gameArea.offsetWidth) {
-                        obstacle.element.remove();
-                        this.variables.obstacles.splice(index, 1);
-                    }
-                });
-            },
-            checkCollision: function(obstacle) {
-                const hamsterRect = this.elements.hamster.getBoundingClientRect();
-                const obstacleRect = obstacle.getBoundingClientRect();
-                
-                return !(
-                    hamsterRect.right < obstacleRect.left || 
-                    hamsterRect.left > obstacleRect.right || 
-                    hamsterRect.bottom < obstacleRect.top || 
-                    hamsterRect.top > obstacleRect.bottom
-                );
-            },
-            endGame: function() {
-                clearInterval(this.variables.gameInterval);
-                clearInterval(this.variables.obstacleInterval);
-                this.variables.isRunning = false;
-                
-                this.elements.startBtn.disabled = false;
-                this.elements.jumpBtn.disabled = true;
-                
-                // Начисляем награды
-                const coinsEarned = Math.floor(this.variables.distance / 10);
-                userData.coins += coinsEarned;
-                userData.score += Math.floor(this.variables.distance);
-                
-                // Обновляем рекорд
-                if (this.variables.distance > userData.runnerGame.highscore) {
-                    userData.runnerGame.highscore = Math.floor(this.variables.distance);
-                    this.elements.highscoreDisplay.textContent = userData.runnerGame.highscore;
-                }
-                
-                // Обновляем прогресс квеста
-                userData.quests.runDistance.progress = Math.min(
-                    userData.quests.runDistance.target,
-                    userData.quests.runDistance.progress + Math.floor(this.variables.distance)
-                );
-                
-                updateGlobalUI();
-                saveUserData();
-                
-                const resultMessage = `Игра окончена!\n\n🏃 Дистанция: ${Math.floor(this.variables.distance)}m\n💰 Получено коинов: ${coinsEarned}`;
-                showNotification(resultMessage, 'success');
+        // Использование предметов из инвентаря
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('use-item')) {
+                const itemId = e.target.getAttribute('data-item');
+                useInventoryItem(itemId);
             }
-        };
-        
-        // ==================== НОВАЯ ИГРА: ХОМЯК В ЛАБИРИНТЕ ====================
-        const mazeGame = {
-            elements: {
-                gameArea: document.getElementById('maze-game-area'),
-                hamster: document.getElementById('maze-hamster'),
-                timerDisplay: document.getElementById('maze-timer'),
-                collectedDisplay: document.getElementById('maze-collected'),
-                bestTimeDisplay: document.getElementById('maze-best-time'),
-                startBtn: document.getElementById('maze-start-btn'),
-                resetBtn: document.getElementById('maze-reset-btn')
-            },
-            variables: {
-                isPlaying: false,
-                timer: 0,
-                timerInterval: null,
-                cheeses: [],
-                walls: [],
-                hamsterPosition: { x: 0, y: 0 },
-                initialized: false,
-                mazeLevel: 1
-            },
-            initMaze: function() {
-                if (this.variables.initialized) return;
-                
-                this.elements.startBtn.addEventListener('click', this.startGame.bind(this));
-                this.elements.resetBtn.addEventListener('click', this.resetMaze.bind(this));
-                
-                // Обработчики клавиатуры
-                document.addEventListener('keydown', (e) => {
-                    if (!this.variables.isPlaying) return;
-                    
-                    const step = 10;
-                    let newX = this.variables.hamsterPosition.x;
-                    let newY = this.variables.hamsterPosition.y;
-                    
-                    switch(e.key) {
-                        case 'ArrowUp':
-                            newY -= step;
-                            break;
-                        case 'ArrowDown':
-                            newY += step;
-                            break;
-                        case 'ArrowLeft':
-                            newX -= step;
-                            break;
-                        case 'ArrowRight':
-                            newX += step;
-                            break;
-                        default:
-                            return;
-                    }
-                    
-                    // Проверяем столкновение со стенами
-                    if (!this.checkWallCollision(newX, newY)) {
-                        this.variables.hamsterPosition = { x: newX, y: newY };
-                        this.elements.hamster.style.left = `${newX}px`;
-                        this.elements.hamster.style.top = `${newY}px`;
-                        
-                        // Проверяем сбор сыра
-                        this.checkCheeseCollection();
-                    }
-                });
-                
-                this.resetMaze();
-                this.variables.initialized = true;
-            },
-            resetMaze: function() {
-                // Очищаем игровое поле
-                this.elements.gameArea.innerHTML = '';
-                this.variables.walls = [];
-                this.variables.cheeses = [];
-                
-                // Создаем хомяка
-                this.elements.gameArea.appendChild(this.elements.hamster);
-                this.variables.hamsterPosition = { x: 20, y: 20 };
-                this.elements.hamster.style.left = '20px';
-                this.elements.hamster.style.top = '20px';
-                
-                // Создаем лабиринт
-                this.generateMaze();
-                
-                // Создаем сыры
-                this.generateCheeses();
-                
-                // Сбрасываем таймер и счетчик
-                this.variables.timer = 0;
-                this.elements.timerDisplay.textContent = '0';
-                this.elements.collectedDisplay.textContent = '0/5';
-                this.elements.bestTimeDisplay.textContent = userData.mazeGame.bestTime || '0';
-                
-                this.variables.isPlaying = false;
-                clearInterval(this.variables.timerInterval);
-            },
-            generateMaze: function() {
-                // Простой алгоритм генерации лабиринта
-                const mazeWidth = this.elements.gameArea.offsetWidth;
-                const mazeHeight = this.elements.gameArea.offsetHeight;
-                
-                // Внешние стены
-                this.createWall(0, 0, mazeWidth, 10); // Верхняя
-                this.createWall(0, mazeHeight - 10, mazeWidth, 10); // Нижняя
-                this.createWall(0, 0, 10, mazeHeight); // Левая
-                this.createWall(mazeWidth - 10, 0, 10, mazeHeight); // Правая
-                
-                // Внутренние стены (упрощенный лабиринт)
-                this.createWall(100, 0, 10, 200);
-                this.createWall(200, 100, 10, 200);
-                this.createWall(300, 0, 10, 150);
-                this.createWall(150, 250, 200, 10);
-                this.createWall(50, 150, 150, 10);
-                
-                // Финиш в правом нижнем углу
-                this.createWall(mazeWidth - 50, mazeHeight - 50, 40, 10, 'var(--success-color)');
-            },
-            createWall: function(x, y, width, height, color = 'var(--dark-color)') {
-                const wall = document.createElement('div');
-                wall.className = 'maze-wall';
-                wall.style.left = `${x}px`;
-                wall.style.top = `${y}px`;
-                wall.style.width = `${width}px`;
-                wall.style.height = `${height}px`;
-                wall.style.backgroundColor = color;
-                
-                this.elements.gameArea.appendChild(wall);
-                this.variables.walls.push({
-                    element: wall,
-                    x: x,
-                    y: y,
-                    width: width,
-                    height: height
-                });
-            },
-            generateCheeses: function() {
-                const positions = [
-                    { x: 150, y: 50 },
-                    { x: 250, y: 150 },
-                    { x: 350, y: 100 },
-                    { x: 100, y: 200 },
-                    { x: 400, y: 300 }
-                ];
-                
-                positions.forEach(pos => {
-                    const cheese = document.createElement('div');
-                    cheese.className = 'maze-cheese';
-                    cheese.style.left = `${pos.x}px`;
-                    cheese.style.top = `${pos.y}px`;
-                    
-                    this.elements.gameArea.appendChild(cheese);
-                    this.variables.cheeses.push({
-                        element: cheese,
-                        x: pos.x,
-                        y: pos.y,
-                        collected: false
-                    });
-                });
-            },
-            startGame: function() {
-                if (this.variables.isPlaying || userData.energy < 15) {
-                    if (userData.energy < 15) {
-                        showNotification('Недостаточно энергии!', 'error');
-                    }
-                    return;
-                }
-                
-                // Расходуем энергию
-                userData.energy -= 15;
-                updateGlobalUI();
-                
-                this.variables.isPlaying = true;
-                this.variables.timer = 0;
-                this.variables.cheeses.forEach(cheese => cheese.collected = false);
-                
-                // Запускаем таймер
-                this.variables.timerInterval = setInterval(() => {
-                    this.variables.timer++;
-                    this.elements.timerDisplay.textContent = this.variables.timer;
-                }, 1000);
-            },
-            checkWallCollision: function(x, y) {
-                const hamsterSize = 30;
-                
-                return this.variables.walls.some(wall => {
-                    return x < wall.x + wall.width &&
-                           x + hamsterSize > wall.x &&
-                           y < wall.y + wall.height &&
-                           y + hamsterSize > wall.y;
-                });
-            },
-            checkCheeseCollection: function() {
-                const hamsterSize = 30;
-                const hamsterRect = {
-                    x: this.variables.hamsterPosition.x,
-                    y: this.variables.hamsterPosition.y,
-                    width: hamsterSize,
-                    height: hamsterSize
-                };
-                
-                this.variables.cheeses.forEach(cheese => {
-                    if (!cheese.collected && 
-                        hamsterRect.x < cheese.x + 20 &&
-                        hamsterRect.x + hamsterRect.width > cheese.x &&
-                        hamsterRect.y < cheese.y + 20 &&
-                        hamsterRect.y + hamsterRect.height > cheese.y) {
-                        
-                        cheese.collected = true;
-                        cheese.element.style.display = 'none';
-                        
-                        userData.mazeGame.cheesesCollected++;
-                        this.elements.collectedDisplay.textContent = `${userData.mazeGame.cheesesCollected}/5`;
-                        
-                        // Обновляем прогресс квеста
-                        userData.quests.collectCheese.progress = Math.min(
-                            userData.quests.collectCheese.target,
-                            userData.quests.collectCheese.progress + 1
-                        );
-                        
-                        // Эффект сбора
-                        const effect = document.createElement('div');
-                        effect.textContent = '+1';
-                        effect.style.position = 'absolute';
-                        effect.style.left = `${cheese.x}px`;
-                        effect.style.top = `${cheese.y}px`;
-                        effect.style.color = 'gold';
-                        effect.style.fontWeight = 'bold';
-                        effect.style.fontSize = '1.2rem';
-                        effect.style.animation = 'float 1s ease-out forwards';
-                        this.elements.gameArea.appendChild(effect);
-                        
-                        setTimeout(() => {
-                            effect.remove();
-                        }, 1000);
-                        
-                        // Проверяем завершение уровня
-                        if (userData.mazeGame.cheesesCollected >= 5) {
-                            this.completeLevel();
-                        }
-                    }
-                });
-            },
-            completeLevel: function() {
-                clearInterval(this.variables.timerInterval);
-                this.variables.isPlaying = false;
-                
-                // Начисляем награды
-                const timeBonus = Math.max(1, Math.floor(100 / this.variables.timer));
-                const coinsEarned = timeBonus + 50;
-                
-                userData.coins += coinsEarned;
-                userData.score += 100;
-                
-                // Обновляем рекорд
-                if (userData.mazeGame.bestTime === 0 || this.variables.timer < userData.mazeGame.bestTime) {
-                    userData.mazeGame.bestTime = this.variables.timer;
-                    this.elements.bestTimeDisplay.textContent = userData.mazeGame.bestTime;
-                }
-                
-                // Увеличиваем уровень лабиринта
-                this.variables.mazeLevel++;
-                
-                updateGlobalUI();
-                saveUserData();
-                
-                const resultMessage = `Уровень ${this.variables.mazeLevel - 1} пройден!\n\n⏱ Время: ${this.variables.timer} сек\n💰 Получено коинов: ${coinsEarned}`;
-                showNotification(resultMessage, 'success');
-                
-                // Перезагружаем лабиринт с повышенной сложностью
-                setTimeout(() => {
-                    this.resetMaze();
-                }, 3000);
+            
+            if (e.target.classList.contains('equip-item')) {
+                const itemId = e.target.getAttribute('data-item');
+                equipItem(itemId);
             }
-        };
-        
-        // ==================== ИНВЕНТАРЬ ====================
-        const inventory = {
-            items: [
-                {
-                    id: 'energy-potion',
-                    name: 'Зелье энергии',
-                    description: 'Восстанавливает 20 энергии',
-                    icon: 'fas fa-bolt',
-                    type: 'consumable',
-                    effect: () => {
-                        userData.energy = Math.min(userData.maxEnergy, userData.energy + 20);
-                        showNotification('Энергия восстановлена на 20 единиц!', 'success');
-                        updateGlobalUI();
-                    }
-                },
-                {
-                    id: 'lucky-charm',
-                    name: 'Талисман удачи',
-                    description: 'Увеличивает шанс на редкие предметы',
-                    icon: 'fas fa-clover',
-                    type: 'equipment',
-                    slot: 'charm',
-                    effect: () => {
-                        showNotification('Удача увеличена на 15%!', 'success');
-                    }
-                },
-                {
-                    id: 'runner-boots',
-                    name: 'Ботинки бегуна',
-                    description: 'Увеличивают скорость в игре "Хомяк-бегун"',
-                    icon: 'fas fa-shoe-prints',
-                    type: 'equipment',
-                    slot: 'boots',
-                    effect: () => {
-                        userData.runnerGame.speedBoost = 1.3;
-                        showNotification('Скорость бега увеличена на 30%!', 'success');
-                    }
-                }
-            ],
-            updateInventoryUI: function() {
-                const container = document.getElementById('inventory-items-list');
-                container.innerHTML = '';
-                
-                let itemCount = 0;
-                let equippedCount = 0;
-                
-                this.items.forEach(item => {
-                    const count = userData.inventory[item.id] || 0;
-                    const isEquipped = userData.equippedItems[item.slot] === item.id;
-                    
-                    if (count > 0) {
-                        itemCount += count;
-                        if (isEquipped) equippedCount++;
-                        
-                        const itemElement = document.createElement('div');
-                        itemElement.className = `inventory-item ${isEquipped ? 'equipped' : ''}`;
-                        itemElement.innerHTML = `
-                            <div class="inventory-item-image">
-                                <i class="${item.icon}"></i>
-                            </div>
-                            <div class="inventory-item-name">${item.name}</div>
-                            <div class="stat-label">${item.description}</div>
-                            ${count > 1 ? `<div class="inventory-item-count">${count}</div>` : ''}
-                            <div class="buttons-container" style="margin-top: 10px;">
-                                ${item.type === 'consumable' ? 
-                                    `<button class="shop-item-button btn-success use-item" data-item="${item.id}">Использовать</button>` : 
-                                    (isEquipped ? 
-                                        `<button class="shop-item-button btn-danger unequip-item" data-item="${item.id}">Снять</button>` : 
-                                        `<button class="shop-item-button btn-info equip-item" data-item="${item.id}">Надеть</button>`)
-                                }
-                            </div>
-                        `;
-                        
-                        container.appendChild(itemElement);
-                    }
-                });
-                
-                document.getElementById('inventory-count').textContent = itemCount;
-                document.getElementById('equipped-count').textContent = equippedCount;
-                
-                // Добавляем обработчики событий
-                document.querySelectorAll('.use-item').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const itemId = e.target.getAttribute('data-item');
-                        this.useItem(itemId);
-                    });
-                });
-                
-                document.querySelectorAll('.equip-item').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const itemId = e.target.getAttribute('data-item');
-                        this.equipItem(itemId);
-                    });
-                });
-                
-                document.querySelectorAll('.unequip-item').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const itemId = e.target.getAttribute('data-item');
-                        this.unequipItem(itemId);
-                    });
-                });
-            },
-            addItem: function(itemId, quantity = 1) {
-                if (!userData.inventory[itemId]) {
-                    userData.inventory[itemId] = 0;
-                }
-                userData.inventory[itemId] += quantity;
-                saveUserData();
-                this.updateInventoryUI();
-            },
-            useItem: function(itemId) {
-                const item = this.items.find(i => i.id === itemId);
-                if (!item || item.type !== 'consumable') return;
-                
-                if (userData.inventory[itemId] > 0) {
-                    userData.inventory[itemId]--;
-                    if (userData.inventory[itemId] <= 0) {
-                        delete userData.inventory[itemId];
-                    }
-                    
-                    item.effect();
-                    saveUserData();
-                    this.updateInventoryUI();
-                }
-            },
-            equipItem: function(itemId) {
-                const item = this.items.find(i => i.id === itemId);
-                if (!item || item.type !== 'equipment') return;
-                
-                // Снимаем предыдущий предмет в этом слоте
-                if (userData.equippedItems[item.slot]) {
-                    this.unequipItem(userData.equippedItems[item.slot]);
-                }
-                
-                userData.equippedItems[item.slot] = itemId;
-                item.effect();
-                saveUserData();
-                this.updateInventoryUI();
-            },
-            unequipItem: function(itemId) {
-                const item = this.items.find(i => i.id === itemId);
-                if (!item || item.type !== 'equipment') return;
-                
-                delete userData.equippedItems[item.slot];
-                saveUserData();
-                this.updateInventoryUI();
-                showNotification(`${item.name} снято`, 'info');
+            
+            if (e.target.classList.contains('unequip-item')) {
+                const itemId = e.target.getAttribute('data-item');
+                unequipItem(itemId);
             }
-        };
+        });
         
-        // ==================== КВЕСТЫ ====================
-        function updateQuestsUI() {
-            let completedCount = 0;
-            let totalRewards = 0;
+        function useInventoryItem(itemId) {
+            const item = getItemData(itemId);
+            if (!item || item.type !== 'consumable') return;
             
-            // Обновляем прогресс квестов
-            Object.keys(userData.quests).forEach(questId => {
-                const quest = userData.quests[questId];
-                const progressPercent = Math.min(100, (quest.progress / quest.target) * 100);
-                
-                // Проверяем выполнение квеста
-                if (!quest.completed && quest.progress >= quest.target) {
-                    quest.completed = true;
-                    userData.coins += quest.reward;
-                    totalRewards += quest.reward;
-                    showNotification(`Квест выполнен! Получено ${quest.reward} коинов`, 'success');
+            if (userData.inventory[itemId] > 0) {
+                userData.inventory[itemId]--;
+                if (userData.inventory[itemId] <= 0) {
+                    delete userData.inventory[itemId];
                 }
                 
-                if (quest.completed) completedCount++;
-            });
-            
-            // Обновляем UI
-            document.getElementById('quests-completed').textContent = `${completedCount}/${Object.keys(userData.quests).length}`;
-            document.getElementById('quests-rewards').textContent = totalRewards;
-            
-            // Обновляем прогресс-бары
-            const questElements = document.querySelectorAll('#quests-list .quest-item');
-            Object.keys(userData.quests).forEach((questId, index) => {
-                const quest = userData.quests[questId];
-                const progressPercent = Math.min(100, (quest.progress / quest.target) * 100);
-                
-                questElements[index].querySelector('.quest-progress-bar').style.width = `${progressPercent}%`;
-                
-                if (quest.completed) {
-                    questElements[index].querySelector('.quest-reward').innerHTML = `<i class="fas fa-check"></i> Получено`;
+                // Применяем эффект предмета
+                if (itemId === 'energy-potion') {
+                    userData.energy = Math.min(userData.maxEnergy, userData.energy + 20);
+                    showNotification("Энергия восстановлена на 20 единиц!", "success");
                 }
-            });
-            
-            if (totalRewards > 0) {
+                
                 updateGlobalUI();
                 saveUserData();
             }
         }
         
-        // ==================== ДОСТИЖЕНИЯ ====================
-        const achievements = {
-            list: [
-                // Существующие достижения
-                {
-                    id: 'first-tap',
-                    name: 'Первый тап',
-                    description: 'Тапните хомяка в первый раз',
-                    icon: 'fas fa-hand-pointer',
-                    condition: () => userData.hamster.level > 1,
-                    reward: 10
-                },
-                // Новые достижения
-                {
-                    id: 'runner-1000',
-                    name: 'Марафонец',
-                    description: 'Пробегите 1000 метров в игре "Хомяк-бегун"',
-                    icon: 'fas fa-flag-checkered',
-                    condition: () => userData.runnerGame.highscore >= 1000,
-                    reward: 50
-                },
-                {
-                    id: 'maze-master',
-                    name: 'Мастер лабиринтов',
-                    description: 'Пройдите 5 уровней лабиринта',
-                    icon: 'fas fa-route',
-                    condition: () => userData.mazeGame.bestTime > 0 && userData.mazeGame.cheesesCollected >= 25,
-                    reward: 60
-                },
-                {
-                    id: 'collector',
-                    name: 'Коллекционер',
-                    description: 'Соберите 10 предметов в инвентаре',
-                    icon: 'fas fa-box-open',
-                    condition: () => Object.keys(userData.inventory).length >= 10,
-                    reward: 40
-                },
-                {
-                    id: 'social',
-                    name: 'Социальный хомяк',
-                    description: 'Добавьте 5 друзей',
-                    icon: 'fas fa-users',
-                    condition: () => userData.friends.length >= 5,
-                    reward: 30
-                }
-            ],
-            updateAchievementsUI: function() {
-                const container = document.getElementById('achievements-list');
-                container.innerHTML = '';
-                
-                let unlockedCount = 0;
-                let totalRewards = 0;
-                
-                this.list.forEach(achievement => {
-                    const isUnlocked = achievement.condition();
-                    if (isUnlocked && !userData.achievements.includes(achievement.id)) {
-                        userData.achievements.push(achievement.id);
-                        userData.coins += achievement.reward;
-                        totalRewards += achievement.reward;
-                        showNotification(`Достижение разблокировано: ${achievement.name}! +${achievement.reward} коинов`, 'success');
-                    }
-                    
-                    if (isUnlocked) unlockedCount++;
-                    
-                    const achievementElement = document.createElement('div');
-                    achievementElement.className = 'shop-item';
-                    achievementElement.innerHTML = `
-                        <div class="shop-item-image">
-                            <i class="${achievement.icon}"></i>
-                        </div>
-                        <div class="shop-item-name">${achievement.name}</div>
-                        <div class="stat-label">${achievement.description}</div>
-                        <div class="shop-item-price" style="color: ${isUnlocked ? 'var(--success-color)' : 'var(--accent-color)'}">
-                            ${isUnlocked ? '✔ Разблокировано' : '🔒 Заблокировано'}
-                        </div>
-                        ${isUnlocked ? `<div class="stat-number">Награда: ${achievement.reward} коинов</div>` : ''}
-                    `;
-                    
-                    container.appendChild(achievementElement);
-                });
-                
-                document.getElementById('achievements-count').textContent = `${unlockedCount}/${this.list.length}`;
-                document.getElementById('achievements-progress').textContent = `${Math.round((unlockedCount / this.list.length) * 100)}%`;
-                document.getElementById('achievements-rewards').textContent = totalRewards;
-                
-                if (totalRewards > 0) {
-                    updateGlobalUI();
-                    saveUserData();
-                }
+        function equipItem(itemId) {
+            const item = getItemData(itemId);
+            if (!item || item.type !== 'cosmetic') return;
+            
+            // Снимаем предыдущий предмет в этом слоте
+            if (userData.equippedItems[item.slot]) {
+                unequipItem(userData.equippedItems[item.slot]);
             }
-        };
+            
+            userData.equippedItems[item.slot] = itemId;
+            
+            // Применяем эффект
+            if (itemId === 'hamster-skin1') {
+                document.getElementById('hamster').style.filter = 'drop-shadow(0 5px 10px rgba(255, 215, 0, 0.5))';
+                showNotification("Скин 'Золотой хомяк' надет!", "success");
+            }
+            
+            updateGlobalUI();
+            saveUserData();
+        }
         
-        // ==================== ДРУЗЬЯ ====================
-        const friendsSystem = {
-            init: function() {
-                document.getElementById('invite-friends-btn').addEventListener('click', this.inviteFriends);
-                this.updateFriendsUI();
-            },
-            inviteFriends: function() {
-                if (window.TelegramGameProxy) {
-                    TelegramGameProxy.shareGame({
-                        title: 'Присоединяйся к Супер Хомяк Игры!',
-                        text: 'Я играю в эту крутую игру с хомяками! Присоединяйся!',
-                        url: window.location.href
-                    });
-                } else {
-                    showNotification('Функция доступна только в Telegram', 'info');
-                }
-            },
-            updateFriendsUI: function() {
-                const container = document.getElementById('friends-list');
-                
-                if (userData.friends.length === 0) {
-                    container.innerHTML = `
-                        <div class="friend-item">
-                            <div class="friend-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="friend-name">Нет друзей</div>
-                            <div class="friend-status">Пригласите друзей для соревнований</div>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = '';
-                    userData.friends.forEach(friend => {
-                        const friendElement = document.createElement('div');
-                        friendElement.className = 'friend-item';
-                        friendElement.innerHTML = `
-                            <div class="friend-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="friend-name">${friend.name}</div>
-                            <div class="friend-status">Уровень: ${friend.level || 1}</div>
-                        `;
-                        container.appendChild(friendElement);
-                    });
-                }
-                
-                document.getElementById('friends-count').textContent = userData.friends.length;
-                document.getElementById('friends-bonus').textContent = `${Math.min(20, userData.friends.length * 2)}%`;
+        function unequipItem(itemId) {
+            const item = getItemData(itemId);
+            if (!item || item.type !== 'cosmetic') return;
+            
+            delete userData.equippedItems[item.slot];
+            
+            // Убираем эффект
+            if (itemId === 'hamster-skin1') {
+                document.getElementById('hamster').style.filter = 'drop-shadow(0 5px 10px rgba(0,0,0,0.2))';
+                showNotification("Скин 'Золотой хомяк' снят", "info");
             }
-        };
+            
+            updateGlobalUI();
+            saveUserData();
+        }
         
         // Инициализация при загрузке страницы
         window.onload = function() {
             loadUserData();
             
-            // Инициализация игр
+            // Инициализация систем
             hamsterGame.init();
-            fallingItemsGame.init();
-            memoryGame.init();
-            runnerGame.init();
-            mazeGame.init();
-            shop.init();
-            achievements.init();
-            friendsSystem.init();
+            shopSystem.init();
+            settingsSystem.init();
             
             // Обновляем энергию каждую минуту
             setInterval(updateEnergy, 60000);
             
-            // Показываем первую игру
-            document.getElementById('hamster-game').style.display = 'block';
-            
             // Для демо: добавляем тестовые предметы
             if (!window.TelegramGameProxy) {
-                inventory.addItem('energy-potion', 3);
-                inventory.addItem('lucky-charm', 1);
-                inventory.addItem('runner-boots', 1);
-                
-                // Добавляем кнопку сброса прогресса
-                const resetBtn = document.createElement('button');
-                resetBtn.textContent = 'Сбросить прогресс';
-                resetBtn.style.margin = '20px auto';
-                resetBtn.style.display = 'block';
-                resetBtn.className = 'btn-danger';
-                resetBtn.addEventListener('click', () => {
-                    localStorage.removeItem(`user_${userId}`);
-                    location.reload();
-                });
-                document.getElementById('app-container').appendChild(resetBtn);
+                userData.inventory['energy-potion'] = 3;
+                userData.inventory['hamster-skin1'] = 1;
+                updateGlobalUI();
             }
         };
     </script>
