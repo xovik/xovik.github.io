@@ -3,254 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Хомяк Аркада</title>
-    <script src="https://telegram.org/js/games.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Tap-Tap Хомяк</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #FF7F50;
-            --primary-dark: #E86A40;
-            --secondary: #4D96FF;
-            --accent: #FF6B6B;
-            --success: #4CAF50;
-            --warning: #FFC107;
-            --danger: #F44336;
-            --dark: #2D3436;
-            --light: #F5F6FA;
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #dfe9f3 100%);
-            --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --primary-dark: #E66A3D;
+            --secondary: #FFD166;
+            --accent: #06D6A0;
+            --dark: #2D3748;
+            --light: #F7FAFC;
+            --gray: #E2E8F0;
+            --success: #06D6A0;
+            --danger: #EF476F;
+            --info: #118AB2;
+            --warning: #FFD166;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
         
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
         }
         
         body {
-            font-family: 'Nunito', sans-serif;
-            background: var(--bg-gradient);
+            background-color: #F8F9FA;
             color: var(--dark);
             min-height: 100vh;
-            line-height: 1.6;
-        }
-        
-        #app-container {
-            max-width: 1200px;
-            margin: 0 auto;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: radial-gradient(circle at 1px 1px, #E2E8F0 1px, transparent 0);
+            background-size: 20px 20px;
         }
         
-        /* Шапка */
-        #header {
-            background: white;
-            border-radius: 15px;
-            padding: 15px 25px;
-            margin-bottom: 25px;
-            box-shadow: var(--card-shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            padding: 25px;
+            margin-bottom: 20px;
             position: relative;
             overflow: hidden;
         }
         
-        #header::after {
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gray);
+            position: relative;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hamster-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .hamster-level {
+            font-size: 14px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .coins-display {
+            background-color: var(--secondary);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .coins-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .coins-display img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .main-game {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .hamster-container {
+            position: relative;
+            margin: 0 auto;
+            width: 220px;
+            height: 220px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            background-color: var(--light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow);
+            border: 8px solid white;
+        }
+        
+        .hamster {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+        
+        .hamster-container:active {
+            transform: scale(0.95);
+        }
+        
+        .hamster-container:active .hamster {
+            transform: scale(1.1);
+        }
+        
+        .tap-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tap-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tap-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tap-button img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .energy-container {
+            margin: 20px auto;
+            max-width: 300px;
+        }
+        
+        .energy-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background-color: var(--gray);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-bar::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
+            bottom: 0;
+            background: linear-gradient(to right, 
+                            rgba(255,255,255,0.8) 0%, 
+                            rgba(255,255,255,0) 50%, 
+                            rgba(255,255,255,0.8) 100%);
+            animation: shine 2s infinite;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
-        .logo img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-        }
-        
-        .logo h1 {
-            color: var(--primary);
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 15px;
-            flex-wrap: wrap;
+            margin: 30px 0;
         }
         
-        .user-stat {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--light);
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            min-width: 100px;
-        }
-        
-        .user-stat i {
-            color: var(--primary);
-            font-size: 1rem;
-        }
-        
-        .energy-bar {
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            margin-top: 3px;
-            overflow: hidden;
-        }
-        
-        .energy-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            width: 100%;
-            transition: var(--transition);
-        }
-        
-        /* Основное содержимое */
-        #main-content {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-        
-        /* Меню игр */
-        #games-menu {
-            flex: 1;
-            min-width: 280px;
-            background: white;
+        .stat-box {
+            background-color: white;
+            padding: 15px;
             border-radius: 15px;
-            padding: 20px;
-            box-shadow: var(--card-shadow);
-            position: sticky;
-            top: 20px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--gray);
         }
         
-        .menu-title {
-            font-size: 1.2rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         
-        .game-tab {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
+        .stat-box h3 {
+            font-size: 14px;
+            color: var(--dark);
             margin-bottom: 8px;
-            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .stat-box p {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .stat-box img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .shop {
+            margin-top: 30px;
+        }
+        
+        .shop h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--dark);
+            font-size: 24px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .shop h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        .shop-category {
+            margin-bottom: 30px;
+        }
+        
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .shop-item {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
             cursor: pointer;
             transition: var(--transition);
-            font-weight: 600;
-            color: var(--dark);
-            border-left: 4px solid transparent;
-        }
-        
-        .game-tab:hover {
-            background: rgba(77, 150, 255, 0.1);
-            transform: translateX(5px);
-            border-left-color: var(--secondary);
-        }
-        
-        .game-tab.active {
-            background: linear-gradient(90deg, rgba(77, 150, 255, 0.1), rgba(255, 107, 107, 0.1));
-            color: var(--primary);
-            border-left-color: var(--primary);
-            font-weight: 700;
-        }
-        
-        .game-tab i {
-            font-size: 1.1rem;
-            width: 20px;
-            text-align: center;
-        }
-        
-        .game-tab .badge {
-            margin-left: auto;
-            background: var(--primary);
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-        }
-        
-        /* Область игры */
-        #game-display {
-            flex: 3;
-            min-width: 300px;
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: var(--card-shadow);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray);
             position: relative;
             overflow: hidden;
         }
         
-        #game-display::before {
-            content: "";
+        .shop-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shop-item::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
+            width: 100%;
             height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
+            background: linear-gradient(to right, var(--primary), var(--accent));
         }
         
-        .game-title {
-            color: var(--primary);
+        .shop-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
             margin-bottom: 10px;
-            font-size: 2rem;
-            font-weight: 900;
+            transition: var(--transition);
+        }
+        
+        .shop-item:hover img {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .shop-item h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .shop-item .price {
+            color: var(--primary-dark);
+            font-weight: 800;
+            font-size: 18px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 5px;
         }
         
-        .game-description {
-            color: var(--dark);
-            margin-bottom: 20px;
-            font-size: 1rem;
-            opacity: 0.8;
+        .shop-item .price img {
+            width: 16px;
+            height: 16px;
+            margin: 0;
         }
         
-        /* Общие стили игр */
-        .game-container {
+        .shop-item .description {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 5px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--gray);
+            position: relative;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #718096;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary-dark);
+        }
+        
+        .tab-indicator {
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 3px 3px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-content {
             display: none;
-        }
-        
-        .game-container.active {
-            display: block;
             animation: fadeIn 0.5s ease;
         }
         
@@ -259,1732 +426,1823 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+        .tab-content.active {
+            display: block;
         }
         
-        .stat-box {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            border: 2px solid var(--light);
-            text-align: center;
-            transition: var(--transition);
-        }
-        
-        .stat-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-        }
-        
-        .stat-title {
-            font-size: 0.9rem;
-            color: var(--dark);
-            margin-bottom: 5px;
-            font-weight: 600;
-            opacity: 0.7;
-        }
-        
-        .stat-value {
-            font-size: 1.7rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        
-        .buttons-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            box-shadow: 0 4px 8px rgba(255, 127, 80, 0.3);
-            min-width: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        button::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255,255,255,0.1);
-            transform: rotate(30deg);
-            transition: var(--transition);
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(255, 127, 80, 0.4);
-        }
-        
-        button:hover::after {
-            left: 100%;
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        button:disabled {
-            background: #CCCCCC;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none !important;
-        }
-        
-        button:disabled::after {
-            display: none;
-        }
-        
-        .btn-success {
-            background: var(--success);
-            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-        }
-        
-        .btn-success:hover {
-            box-shadow: 0 8px 15px rgba(76, 175, 80, 0.4);
-        }
-        
-        .btn-warning {
-            background: var(--warning);
-            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
-            color: var(--dark);
-        }
-        
-        .btn-warning:hover {
-            box-shadow: 0 8px 15px rgba(255, 193, 7, 0.4);
-        }
-        
-        .btn-danger {
-            background: var(--danger);
-            box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
-        }
-        
-        .btn-danger:hover {
-            box-shadow: 0 8px 15px rgba(244, 67, 54, 0.4);
-        }
-        
-        .btn-info {
-            background: var(--secondary);
-            box-shadow: 0 4px 8px rgba(77, 150, 255, 0.3);
-        }
-        
-        .btn-info:hover {
-            box-shadow: 0 8px 15px rgba(77, 150, 255, 0.4);
-        }
-        
-        .btn-purple {
-            background: #9C27B0;
-            box-shadow: 0 4px 8px rgba(156, 39, 176, 0.3);
-        }
-        
-        .btn-purple:hover {
-            box-shadow: 0 8px 15px rgba(156, 39, 176, 0.4);
-        }
-        
-        /* Стили для игры с хомяком */
-        #hamster-game-area {
+        .leaderboard {
             width: 100%;
-            height: 350px;
-            background: linear-gradient(to bottom, #E0F7FA, #B2EBF2);
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
             border-radius: 15px;
-            margin: 20px 0;
-            position: relative;
             overflow: hidden;
-            border: 3px solid var(--primary);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
         }
         
-        #hamster {
-            width: 100px;
-            height: 100px;
-            position: absolute;
-            cursor: pointer;
-            transition: transform 0.1s, filter 0.2s;
-            user-select: none;
-            -webkit-user-drag: none;
-            z-index: 10;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
-        }
-        
-        #hamster:hover {
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)) brightness(1.1);
-        }
-        
-        #hamster:active {
-            transform: scale(0.95);
-        }
-        
-        /* Стили для инвентаря */
-        .inventory-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .inventory-item {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            border: 2px solid var(--light);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            text-align: center;
-            position: relative;
-            transition: var(--transition);
-        }
-        
-        .inventory-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .inventory-item.equipped {
-            border-color: var(--success);
-            box-shadow: 0 0 0 2px var(--success);
-        }
-        
-        .inventory-item-image {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 10px;
-            background: #f5f5f5;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-        
-        .inventory-item-name {
-            font-weight: 700;
-            margin-bottom: 5px;
-            font-size: 0.95rem;
-        }
-        
-        .inventory-item-desc {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        
-        .inventory-item-count {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: var(--primary);
+        .leaderboard th {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
             color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        /* Стили для магазина */
-        .shop-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .shop-item {
-            background: white;
-            border-radius: 12px;
             padding: 15px;
-            border: 2px solid var(--light);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            transition: var(--transition);
-            cursor: pointer;
-            text-align: center;
-        }
-        
-        .shop-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .shop-item-image {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 10px;
-            background: #f5f5f5;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: var(--primary);
-            border: 2px dashed var(--primary);
-        }
-        
-        .shop-item-name {
+            text-align: left;
             font-weight: 700;
-            margin-bottom: 5px;
         }
         
-        .shop-item-desc {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 10px;
-            min-height: 40px;
+        .leaderboard td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray);
+            font-weight: 600;
         }
         
-        .shop-item-price {
-            color: var(--success);
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
+        .leaderboard tr:nth-child(even) {
+            background-color: #F8FAFC;
         }
         
-        .shop-item-button {
+        .leaderboard tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .leaderboard tr:hover {
+            background-color: #EDF2F7;
+        }
+        
+        .leaderboard .current-player {
+            background-color: #FFF9E6;
+            font-weight: 800;
+        }
+        
+        .leaderboard .rank {
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 8px;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
         }
         
-        /* Стили для квестов */
-        .quest-item {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 2px solid var(--light);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: modalAppear 0.3s ease forwards;
+        }
+        
+        @keyframes modalAppear {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal h2 {
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            font-size: 24px;
+        }
+        
+        .modal p {
+            margin-bottom: 25px;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 2px solid var(--gray);
+            border-radius: 10px;
+            font-size: 16px;
             transition: var(--transition);
         }
         
-        .quest-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 127, 80, 0.2);
         }
         
-        .quest-header {
+        .modal-buttons {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+            justify-content: center;
+            gap: 15px;
         }
         
-        .quest-title {
+        .modal-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
             font-weight: 700;
-            color: var(--dark);
-            font-size: 1.1rem;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .quest-reward {
-            color: var(--success);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .quest-progress {
-            height: 8px;
-            background: #ECF0F1;
-            border-radius: 4px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-        
-        .quest-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            width: 0%;
-            transition: width 0.5s ease-out;
-        }
-        
-        /* Стили для друзей */
-        .friend-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .friend-item {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            border: 2px solid var(--light);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            text-align: center;
-            transition: var(--transition);
-        }
-        
-        .friend-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .friend-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
+        .modal-button.confirm {
+            background: linear-gradient(to right, var(--accent), var(--success));
             color: white;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: 3px solid white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        .friend-name {
-            font-weight: 700;
-            margin-bottom: 5px;
+        .modal-button.cancel {
+            background-color: var(--gray);
+            color: var(--dark);
         }
         
-        .friend-level {
-            font-size: 0.8rem;
-            background: var(--light);
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-bottom: 5px;
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
         
-        .friend-status {
-            font-size: 0.8rem;
-            color: #666;
+        .modal-button:active {
+            transform: translateY(1px);
         }
         
-        /* Анимации */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        @keyframes coinFlip {
-            0% { transform: rotateY(0); }
-            50% { transform: rotateY(180deg); }
-            100% { transform: rotateY(360deg); }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        .bounce {
-            animation: bounce 0.5s infinite;
-        }
-        
-        .coin-flip {
-            animation: coinFlip 1s;
-        }
-        
-        .float {
-            animation: float 2s infinite ease-in-out;
-        }
-        
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        .shake {
-            animation: shake 0.5s;
-        }
-        
-        /* Эффект при тапе */
-        .tap-effect {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 214, 0, 0.7);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: tapAnimation 0.6s forwards;
-            z-index: 20;
-        }
-        
-        @keyframes tapAnimation {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
-        
-        /* Уведомления */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: white;
-            padding: 15px 20px;
+            background-color: var(--success);
+            color: white;
+            padding: 15px 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
+            box-shadow: var(--shadow-lg);
             transform: translateX(200%);
-            transition: transform 0.3s ease-out;
-            max-width: 300px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 1100;
             display: flex;
             align-items: center;
             gap: 10px;
-            border-left: 4px solid var(--primary);
+            font-weight: 600;
+            max-width: 90%;
+        }
+        
+        .notification img {
+            width: 20px;
+            height: 20px;
         }
         
         .notification.show {
             transform: translateX(0);
         }
         
-        .notification i {
-            font-size: 1.5rem;
-        }
-        
-        .notification.success {
-            border-left-color: var(--success);
-        }
-        
-        .notification.success i {
-            color: var(--success);
-        }
-        
         .notification.error {
-            border-left-color: var(--danger);
+            background-color: var(--danger);
         }
         
-        .notification.error i {
-            color: var(--danger);
-        }
-        
-        .notification.info {
-            border-left-color: var(--secondary);
-        }
-        
-        .notification.info i {
-            color: var(--secondary);
-        }
-        
-        /* Прогресс бар */
-        .progress-container {
-            margin: 20px 0;
-        }
-        
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
+        .notification.warning {
+            background-color: var(--warning);
             color: var(--dark);
         }
         
-        .progress-bar {
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
+        .notification.info {
+            background-color: var(--info);
         }
         
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            width: 0%;
-            transition: width 0.5s ease-out;
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
         
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            #main-content {
-                flex-direction: column;
-            }
-            
-            #games-menu {
-                order: 2;
-                position: static;
-                max-height: none;
-            }
-            
-            #game-display {
-                order: 1;
-            }
-            
-            #header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            
-            .user-info {
-                justify-content: center;
-            }
-            
-            .game-tab {
-                justify-content: flex-start;
-            }
-            
-            .buttons-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            button {
-                width: 100%;
-            }
+        .achievement {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray);
+            opacity: 0.5;
+            transition: var(--transition);
         }
         
-        @media (max-width: 480px) {
-            .user-stat {
-                min-width: calc(50% - 10px);
-            }
-            
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .inventory-items, .shop-items, .friend-list {
-                grid-template-columns: 1fr;
-            }
+        .achievement.unlocked {
+            opacity: 1;
+            border-left: 5px solid var(--accent);
         }
         
-        /* Кастомный скроллбар */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .achievement-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
         }
         
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
+        .achievement-icon img {
+            width: 24px;
+            height: 24px;
         }
         
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
+        .achievement-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 3px;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
+        .achievement-info p {
+            font-size: 12px;
+            color: #718096;
         }
         
-        /* Дополнительные декоративные элементы */
-        .decoration {
+        .achievement-reward {
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .floating-coins {
             position: absolute;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--secondary);
+            animation: floatUp 1s ease forwards;
             pointer-events: none;
-            z-index: 1;
+            z-index: 10;
         }
         
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--primary);
-            opacity: 0;
-            z-index: 999;
-            animation: confettiFall 3s linear forwards;
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
         }
         
-        @keyframes confettiFall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        .hamster-hat {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+            z-index: 5;
+        }
+        
+        .hamster-accessory {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 30px;
+            z-index: 5;
+        }
+        
+        .event-banner {
+            background: linear-gradient(to right, var(--primary), var(--danger));
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .daily-bonus {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .daily-bonus h3 {
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .daily-bonus-button {
+            background: linear-gradient(to right, var(--accent), var(--success));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .daily-bonus-button:disabled {
+            background: var(--gray);
+            color: #718096;
+            cursor: not-allowed;
+        }
+        
+        .daily-bonus-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Mini-game styles */
+        .mini-game-container {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f4f8;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .falling-object {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 5;
+            transition: transform 0.1s;
+        }
+        
+        .coin-object {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1820/1820899.png');
+        }
+        
+        .bomb-object {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1828/1828884.png');
+        }
+        
+        .mini-game-score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            z-index: 10;
+        }
+        
+        .mini-game-timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            z-index: 10;
+        }
+        
+        .mini-game-start {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+        
+        .mini-game-start:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        
+        .rename-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        
+        .rename-button:hover {
+            opacity: 1;
+            transform: rotate(15deg);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .hamster-container {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .shop-items {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .achievements {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="app-container">
-        <div id="header">
-            <div class="logo">
-                <img src="https://i.imgur.com/JR9Z1pO.png" alt="Логотип">
-                <h1>Хомяк Аркада</h1>
-            </div>
+    <div class="container">
+        <header>
             <div class="user-info">
-                <div class="user-stat">
-                    <i class="fas fa-coins"></i>
-                    <span id="global-coins">0</span>
+                <h1 class="hamster-name">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" alt="Hamster" style="width: 28px; height: 28px;">
+                    <span id="hamster-name">Хомяк</span>
+                    <button class="rename-button" id="rename-button-small">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Edit" style="width: 16px; height: 16px;">
+                    </button>
+                </h1>
+                <p class="hamster-level">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Level" style="width: 16px; height: 16px;">
+                    Уровень: <span id="hamster-level">1</span>
+                </p>
+            </div>
+            <div class="coins-display">
+                <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins">
+                <span id="coins">0</span>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="game">Игра</div>
+            <div class="tab" data-tab="shop">Магазин</div>
+            <div class="tab" data-tab="achievements">Достижения</div>
+            <div class="tab" data-tab="minigame">Мини-игра</div>
+            <div class="tab-indicator"></div>
+        </div>
+        
+        <div class="tab-content active" id="game-tab">
+            <div class="event-banner" id="event-banner" style="display: none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Event" style="width: 20px; height: 20px;">
+                <span id="event-text">Событие: Двойные монеты в течение часа!</span>
+            </div>
+            
+            <div class="main-game">
+                <div class="hamster-container" id="hamster">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" alt="Hamster" class="hamster">
+                    <img src="" alt="Hat" class="hamster-hat" id="hamster-hat" style="display: none;">
+                    <img src="" alt="Accessory" class="hamster-accessory" id="hamster-accessory" style="display: none;">
                 </div>
-                <div class="user-stat">
-                    <i class="fas fa-trophy"></i>
-                    <span id="global-score">0</span>
+                <button class="tap-button" id="tap-button">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Tap">
+                    ТАПАТЬ!
+                </button>
+                
+                <div class="energy-container">
+                    <div class="energy-label">
+                        <span>Энергия</span>
+                        <span id="energy">50</span>/<span id="max-energy">50</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="energy-bar"></div>
+                    </div>
                 </div>
-                <div class="user-stat">
-                    <i class="fas fa-user"></i>
-                    <span id="username">Игрок</span>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <h3>Монет за клик</h3>
+                    <p id="coins-per-tap">1</p>
                 </div>
-                <div class="user-stat">
-                    <i class="fas fa-bolt"></i>
-                    <span id="energy">100/100</span>
-                    <div class="energy-bar">
-                        <div class="energy-progress" id="energy-progress"></div>
+                <div class="stat-box">
+                    <h3>Авто-тап</h3>
+                    <p><span id="auto-tap">5</span>/час</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Очки улучшения</h3>
+                    <p><img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade"> <span id="upgrade-points">0</span></p>
+                </div>
+                <div class="stat-box">
+                    <h3>Всего тапов</h3>
+                    <p id="total-taps">0</p>
+                </div>
+            </div>
+            
+            <button class="tap-button" id="daily-bonus-button" style="width: 100%;">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Gift">
+                Получить ежедневный бонус
+            </button>
+            <p id="daily-bonus-timer" style="margin-top: 10px; font-size: 12px; color: #718096; text-align: center;"></p>
+        </div>
+        
+        <div class="tab-content" id="shop-tab">
+            <div class="shop">
+                <div class="shop-category">
+                    <h2>Улучшения</h2>
+                    <div class="shop-items">
+                        <div class="shop-item" data-item="tap-power">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2933/2933245.png" alt="Tap Power">
+                            <h3>Сила тапа</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> <span id="tap-power-price">100</span></p>
+                            <p class="description">+1 монета за клик</p>
+                        </div>
+                        <div class="shop-item" data-item="energy-capacity">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Energy">
+                            <h3>Энергия</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> <span id="energy-price">150</span></p>
+                            <p class="description">+10 к максимуму энергии</p>
+                        </div>
+                        <div class="shop-item" data-item="hamster-upgrade">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1864/1864593.png" alt="Upgrade">
+                            <h3>Улучшить хомяка</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> <span id="upgrade-price">100</span></p>
+                            <p class="description">+0.5/час авто-тапа</p>
+                            <p class="description">Нужно очков: <span id="upgrade-needed">1</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="shop-category">
+                    <h2>Ящики</h2>
+                    <div class="shop-items">
+                        <div class="shop-item" data-item="small-box">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1177/1177568.png" alt="Small Box">
+                            <h3>Маленький ящик</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> 50</p>
+                            <p class="description">1-3 очка улучшения</p>
+                        </div>
+                        <div class="shop-item" data-item="big-box">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2553/2553629.png" alt="Big Box">
+                            <h3>Большой ящик</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> 200</p>
+                            <p class="description">5-10 очков улучшения</p>
+                        </div>
+                        <div class="shop-item" data-item="golden-box">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2553/2553634.png" alt="Golden Box">
+                            <h3>Золотой ящик</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> 500</p>
+                            <p class="description">15-25 очков + шляпа</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="shop-category">
+                    <h2>Внешность</h2>
+                    <div class="shop-items">
+                        <div class="shop-item" data-item="hat-1">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Hat">
+                            <h3>Шляпа волшебника</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> 300</p>
+                            <p class="description">+10% к авто-тапу</p>
+                        </div>
+                        <div class="shop-item" data-item="hat-2">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Hat">
+                            <h3>Кепка босса</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> 500</p>
+                            <p class="description">+20% к монетам за клик</p>
+                        </div>
+                        <div class="shop-item" data-item="accessory-1">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Accessory">
+                            <h3>Очки крутыша</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> 250</p>
+                            <p class="description">+5% к энергии</p>
+                        </div>
+                        <div class="shop-item" data-item="accessory-2">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Accessory">
+                            <h3>Бант стиляги</h3>
+                            <p class="price"><img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins"> 350</p>
+                            <p class="description">+15% к скорости регенерации</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div id="main-content">
-            <div id="games-menu">
-                <div class="menu-title">
-                    <i class="fas fa-gamepad"></i>
-                    Мини-игры
-                </div>
-                <div class="game-tab active" data-game="hamster-game">
-                    <i class="fas fa-paw"></i>
-                    Тап-Тап Хомяк
-                    <span class="badge">NEW</span>
-                </div>
-                <div class="game-tab" data-game="falling-items-game">
-                    <i class="fas fa-apple-alt"></i>
-                    Ловец фруктов
-                </div>
-                <div class="game-tab" data-game="memory-game">
-                    <i class="fas fa-brain"></i>
-                    Игра на память
-                </div>
-                <div class="game-tab" data-game="runner-game">
-                    <i class="fas fa-running"></i>
-                    Хомяк-бегун
-                </div>
-                <div class="game-tab" data-game="maze-game">
-                    <i class="fas fa-route"></i>
-                    Лабиринт
+        <div class="tab-content" id="achievements-tab">
+            <h2 style="text-align: center; margin-bottom: 20px;">Достижения</h2>
+            
+            <div class="achievements">
+                <div class="achievement" id="achievement-1">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Новичок</h3>
+                        <p>Сделайте 100 тапов</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 12px; height: 12px;">
+                            Награда: 50 монет
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="menu-title">
-                    <i class="fas fa-shopping-cart"></i>
-                    Магазин
-                </div>
-                <div class="game-tab" data-game="shop">
-                    <i class="fas fa-tshirt"></i>
-                    Покупки
-                </div>
-                <div class="game-tab" data-game="inventory">
-                    <i class="fas fa-backpack"></i>
-                    Инвентарь
-                </div>
-                
-                <div class="menu-title">
-                    <i class="fas fa-tasks"></i>
-                    Прогресс
-                </div>
-                <div class="game-tab" data-game="achievements">
-                    <i class="fas fa-medal"></i>
-                    Достижения
-                    <span class="badge">5</span>
-                </div>
-                <div class="game-tab" data-game="quests">
-                    <i class="fas fa-scroll"></i>
-                    Квесты
-                </div>
-                <div class="game-tab" data-game="friends">
-                    <i class="fas fa-users"></i>
-                    Друзья
+                <div class="achievement" id="achievement-2">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Коллекционер</h3>
+                        <p>Соберите 500 монет</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade" style="width: 12px; height: 12px;">
+                            Награда: 5 очков улучшения
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="menu-title">
-                    <i class="fas fa-cog"></i>
-                    Настройки
+                <div class="achievement" id="achievement-3">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Улучшатель</h3>
+                        <p>Достигните 5 уровня хомяка</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 12px; height: 12px;">
+                            Награда: 200 монет
+                        </div>
+                    </div>
                 </div>
-                <div class="game-tab" data-game="settings">
-                    <i class="fas fa-sliders-h"></i>
-                    Настройки
+                
+                <div class="achievement" id="achievement-4">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Богач</h3>
+                        <p>Накопите 1000 монет</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade" style="width: 12px; height: 12px;">
+                            Награда: 10 очков улучшения
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-5">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Энерджайзер</h3>
+                        <p>Увеличьте энергию до 100</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 12px; height: 12px;">
+                            Награда: 150 монет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-6">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Мастер тапа</h3>
+                        <p>Сделайте 1000 тапов</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade" style="width: 12px; height: 12px;">
+                            Награда: 20 очков улучшения
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-7">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Король кликов</h3>
+                        <p>Сделайте 5000 тапов</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 12px; height: 12px;">
+                            Награда: 500 монет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-8">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Миллионер</h3>
+                        <p>Накопите 10000 монет</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade" style="width: 12px; height: 12px;">
+                            Награда: 50 очков улучшения
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-9">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Легенда</h3>
+                        <p>Достигните 20 уровня</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 12px; height: 12px;">
+                            Награда: 1000 монет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-10">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Коллекционер вещей</h3>
+                        <p>Купите все предметы в магазине</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade" style="width: 12px; height: 12px;">
+                            Награда: 30 очков улучшения
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-11">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Энергетический титан</h3>
+                        <p>Увеличьте энергию до 250</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 12px; height: 12px;">
+                            Награда: 300 монет
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement" id="achievement-12">
+                    <div class="achievement-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement">
+                    </div>
+                    <div class="achievement-info">
+                        <h3>Мастер мини-игр</h3>
+                        <p>Наберите 1000 очков в мини-игре</p>
+                        <div class="achievement-reward">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade" style="width: 12px; height: 12px;">
+                            Награда: 25 очков улучшения
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+        
+        <div class="tab-content" id="minigame-tab">
+            <h2 style="text-align: center; margin-bottom: 20px;">Мини-игра: Лови монеты!</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: #718096;">
+                Нажимайте на падающие монеты, чтобы заработать бонусы!<br>
+                Избегайте бомб - они отнимают очки!
+            </p>
             
-            <div id="game-display">
-                <!-- Игра с хомяком -->
-                <div id="hamster-game" class="game-container active">
-                    <h2 class="game-title">
-                        <i class="fas fa-paw"></i>
-                        Тап-Тап Хомяк
-                    </h2>
-                    <div class="game-description">Тапайте хомяка, зарабатывайте очки и улучшайте своего питомца!</div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-box">
-                            <div class="stat-title">Счет</div>
-                            <div id="hamster-score-display" class="stat-value">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Время</div>
-                            <div id="hamster-timer" class="stat-value">30</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Очки</div>
-                            <div id="hamster-coins-display" class="stat-value">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Рекорд</div>
-                            <div id="hamster-highscore-display" class="stat-value">0</div>
-                        </div>
-                    </div>
-                    
-                    <div id="hamster-game-area">
-                        <img id="hamster" src="https://i.imgur.com/JR9Z1pO.png" alt="Хомяк">
-                    </div>
-                    
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Уровень: <span id="hamster-level">1</span></span>
-                            <span><span id="hamster-xp">0</span>/<span id="hamster-xp-needed">10</span></span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="hamster-level-progress"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="buttons-container">
-                        <button id="hamster-start-btn" class="btn-success">
-                            <i class="fas fa-play"></i> Начать игру
-                        </button>
-                        <button id="hamster-upgrade-btn" class="btn-info" disabled>
-                            <i class="fas fa-level-up-alt"></i> Улучшить
-                        </button>
-                        <button id="hamster-finish-btn" class="btn-danger" disabled>
-                            <i class="fas fa-stop"></i> Завершить
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Магазин -->
-                <div id="shop" class="game-container">
-                    <h2 class="game-title">
-                        <i class="fas fa-shopping-cart"></i>
-                        Магазин улучшений
-                    </h2>
-                    <div class="game-description">Покупайте улучшения для своих питомцев и игр!</div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-box">
-                            <div class="stat-title">Ваши коины</div>
-                            <div id="shop-coins" class="stat-value">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Скидка</div>
-                            <div id="shop-discount" class="stat-value">0%</div>
-                        </div>
-                    </div>
-                    
-                    <div class="shop-items">
-                        <div class="shop-item" data-item="hamster-skin1">
-                            <div class="shop-item-image">
-                                <i class="fas fa-paw"></i>
-                            </div>
-                            <div class="shop-item-name">Золотой хомяк</div>
-                            <div class="shop-item-desc">Эксклюзивный золотой скин для вашего хомяка</div>
-                            <div class="shop-item-price">
-                                <i class="fas fa-coins"></i> 100
-                            </div>
-                            <button class="shop-item-button btn-info">Купить</button>
-                        </div>
-                        
-                        <div class="shop-item" data-item="energy-boost">
-                            <div class="shop-item-image">
-                                <i class="fas fa-bolt"></i>
-                            </div>
-                            <div class="shop-item-name">Энергия +50</div>
-                            <div class="shop-item-desc">Мгновенно восстанавливает 50 единиц энергии</div>
-                            <div class="shop-item-price">
-                                <i class="fas fa-coins"></i> 80
-                            </div>
-                            <button class="shop-item-button btn-success">Купить</button>
-                        </div>
-                        
-                        <div class="shop-item" data-item="score-multiplier">
-                            <div class="shop-item-image">
-                                <i class="fas fa-times"></i>
-                            </div>
-                            <div class="shop-item-name">Множитель очков</div>
-                            <div class="shop-item-desc">Увеличивает множитель очков на 0.5x</div>
-                            <div class="shop-item-price">
-                                <i class="fas fa-coins"></i> 200
-                            </div>
-                            <button class="shop-item-button btn-info">Купить</button>
-                        </div>
-                        
-                        <div class="shop-item" data-item="runner-boost">
-                            <div class="shop-item-image">
-                                <i class="fas fa-running"></i>
-                            </div>
-                            <div class="shop-item-name">Ускорение бега</div>
-                            <div class="shop-item-desc">Увеличивает скорость в игре "Хомяк-бегун"</div>
-                            <div class="shop-item-price">
-                                <i class="fas fa-coins"></i> 120
-                            </div>
-                            <button class="shop-item-button btn-info">Купить</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Инвентарь -->
-                <div id="inventory" class="game-container">
-                    <h2 class="game-title">
-                        <i class="fas fa-backpack"></i>
-                        Мой инвентарь
-                    </h2>
-                    <div class="game-description">Используйте предметы для улучшения игрового опыта</div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-box">
-                            <div class="stat-title">Предметов</div>
-                            <div id="inventory-count" class="stat-value">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-title">Надето</div>
-                            <div id="equipped-count" class="stat-value">0</div>
-                        </div>
-                    </div>
-                    
-                    <div class="inventory-items" id="inventory-items-list">
-                        <!-- Предметы будут добавляться динамически -->
-                        <div class="inventory-item">
-                            <div class="inventory-item-image">
-                                <i class="fas fa-box-open"></i>
-                            </div>
-                            <div class="inventory-item-name">Инвентарь пуст</div>
-                            <div class="inventory-item-desc">Посетите магазин, чтобы приобрести предметы</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Другие игровые разделы (memory-game, runner-game, maze-game и т.д.) -->
-                <!-- ... -->
-                
-                <!-- Настройки -->
-                <div id="settings" class="game-container">
-                    <h2 class="game-title">
-                        <i class="fas fa-sliders-h"></i>
-                        Настройки
-                    </h2>
-                    <div class="game-description">Настройте игру под свои предпочтения</div>
-                    
-                    <div class="settings-options">
-                        <div class="setting-item">
-                            <h3>Звуки</h3>
-                            <div class="setting-control">
-                                <button id="sound-toggle" class="btn-info">
-                                    <i class="fas fa-volume-up"></i> Вкл
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <h3>Музыка</h3>
-                            <div class="setting-control">
-                                <button id="music-toggle" class="btn-info">
-                                    <i class="fas fa-music"></i> Вкл
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <h3>Уведомления</h3>
-                            <div class="setting-control">
-                                <button id="notifications-toggle" class="btn-info">
-                                    <i class="fas fa-bell"></i> Вкл
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="buttons-container" style="margin-top: 30px;">
-                            <button id="save-settings-btn" class="btn-success">
-                                <i class="fas fa-save"></i> Сохранить
-                            </button>
-                            <button id="reset-progress-btn" class="btn-danger">
-                                <i class="fas fa-trash"></i> Сбросить прогресс
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="mini-game-container" id="minigame-container">
+                <div class="mini-game-score" id="minigame-score">Очки: 0</div>
+                <div class="mini-game-timer" id="minigame-timer">Время: 30</div>
+                <button class="mini-game-start" id="minigame-start">Начать игру</button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="font-size: 14px; color: #718096;">
+                    <strong>Рекорд:</strong> <span id="minigame-highscore">0</span> очков<br>
+                    <strong>Награда:</strong> 1 монета за каждые 10 очков
+                </p>
             </div>
         </div>
     </div>
-
+    
+    <div class="modal" id="rename-modal">
+        <div class="modal-content">
+            <h2>Сменить имя хомяка</h2>
+            <p>Придумайте крутое имя для вашего хомяка!</p>
+            <input type="text" class="modal-input" id="new-name-input" placeholder="Введите новое имя" maxlength="20">
+            <div class="modal-buttons">
+                <button class="modal-button confirm" id="confirm-rename">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Save" style="width: 16px; height: 16px;">
+                    Сохранить
+                </button>
+                <button class="modal-button cancel" id="cancel-rename">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Cancel" style="width: 16px; height: 16px;">
+                    Отмена
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="box-modal">
+        <div class="modal-content">
+            <h2 id="box-modal-title">Ящик открыт!</h2>
+            <img src="" alt="Box" id="box-modal-image" style="width: 120px; height: 120px; margin: 15px auto;">
+            <p id="box-modal-text">Вы получили X очков улучшения!</p>
+            <div class="modal-buttons">
+                <button class="modal-button confirm" id="close-box-modal">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="OK" style="width: 16px; height: 16px;">
+                    Ура!
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="achievement-modal">
+        <div class="modal-content">
+            <h2 id="achievement-modal-title">Достижение получено!</h2>
+            <div style="display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                <div style="width: 60px; height: 60px; background-color: var(--secondary); border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Achievement" style="width: 30px; height: 30px;">
+                </div>
+                <div>
+                    <h3 id="achievement-modal-name" style="font-size: 18px; margin-bottom: 5px;">Новичок</h3>
+                    <p id="achievement-modal-desc" style="font-size: 14px; color: #718096;">Сделайте 100 тапов</p>
+                </div>
+            </div>
+            <p id="achievement-modal-reward" style="font-weight: 700; color: var(--accent);">
+                <img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 16px; height: 16px;">
+                Награда: 50 монет
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-button confirm" id="close-achievement-modal">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="OK" style="width: 16px; height: 16px;">
+                    Отлично!
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="minigame-reward-modal">
+        <div class="modal-content">
+            <h2>Мини-игра завершена!</h2>
+            <p id="minigame-reward-text" style="font-size: 18px; margin: 15px 0;">Вы заработали 0 монет!</p>
+            <div class="modal-buttons">
+                <button class="modal-button confirm" id="close-minigame-reward-modal">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="OK" style="width: 16px; height: 16px;">
+                    Забрать награду
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Notification" style="width: 20px; height: 20px;">
+        <span id="notification-text">Уведомление</span>
+    </div>
+    
     <script>
-        // Глобальные переменные
-        const userData = {
+        // Game State
+        const gameState = {
             coins: 0,
-            score: 0,
-            username: "Игрок",
-            energy: 100,
-            maxEnergy: 100,
+            tapPower: 1,
+            energy: 50,
+            maxEnergy: 50,
+            hamsterLevel: 1,
+            autoTapRate: 5, // per hour
+            upgradePoints: 0,
+            hamsterName: "Хомяк",
             lastEnergyUpdate: Date.now(),
-            settings: {
-                sound: true,
-                music: true,
-                notifications: true
+            lastAutoTap: Date.now(),
+            userId: null,
+            totalTaps: 0,
+            achievements: {
+                'novice': { unlocked: false, progress: 0, target: 100, reward: { coins: 50 } },
+                'collector': { unlocked: false, progress: 0, target: 500, reward: { points: 5 } },
+                'upgrader': { unlocked: false, progress: 0, target: 5, reward: { coins: 200 } },
+                'rich': { unlocked: false, progress: 0, target: 1000, reward: { points: 10 } },
+                'energizer': { unlocked: false, progress: 0, target: 100, reward: { coins: 150 } },
+                'tap-master': { unlocked: false, progress: 0, target: 1000, reward: { points: 20 } },
+                'click-king': { unlocked: false, progress: 0, target: 5000, reward: { coins: 500 } },
+                'millionaire': { unlocked: false, progress: 0, target: 10000, reward: { points: 50 } },
+                'legend': { unlocked: false, progress: 0, target: 20, reward: { coins: 1000 } },
+                'collector-all': { unlocked: false, progress: 0, target: 6, reward: { points: 30 } },
+                'energy-titan': { unlocked: false, progress: 0, target: 250, reward: { coins: 300 } },
+                'minigame-master': { unlocked: false, progress: 0, target: 1000, reward: { points: 25 } }
             },
-            unlockedItems: [],
-            inventory: {},
-            equippedItems: {},
-            achievements: [],
-            quests: {
-                tapHamster: { target: 50, progress: 0, reward: 50, completed: false },
-                collectCoins: { target: 100, progress: 0, reward: 100, completed: false },
-                playGames: { target: 5, progress: 0, reward: 50, completed: false }
-            },
-            friends: [],
-            hamster: {
-                name: "Хомяк",
-                level: 1,
-                xp: 0,
-                xpToNextLevel: 10,
-                income: 5,
-                multiplier: 1,
-                highscore: 0,
-                skin: "default"
-            },
-            // Другие игровые данные...
+            equippedHat: null,
+            equippedAccessory: null,
+            lastDailyBonus: 0,
+            eventActive: false,
+            eventEndTime: 0,
+            purchasedItems: [],
+            minigameHighscore: 0,
+            energyRegenRate: 1, // per minute
+            tapPowerBasePrice: 100,
+            energyBasePrice: 150
         };
         
-        // Получаем данные пользователя из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user_id') || "guest_" + Math.floor(Math.random() * 10000);
-        userData.username = urlParams.get('username') || "Игрок_" + Math.floor(Math.random() * 1000);
+        // DOM Elements
+        const elements = {
+            coins: document.getElementById('coins'),
+            tapButton: document.getElementById('tap-button'),
+            hamster: document.getElementById('hamster'),
+            energy: document.getElementById('energy'),
+            maxEnergy: document.getElementById('max-energy'),
+            energyBar: document.getElementById('energy-bar'),
+            coinsPerTap: document.getElementById('coins-per-tap'),
+            autoTap: document.getElementById('auto-tap'),
+            upgradePoints: document.getElementById('upgrade-points'),
+            hamsterName: document.getElementById('hamster-name'),
+            hamsterLevel: document.getElementById('hamster-level'),
+            upgradePrice: document.getElementById('upgrade-price'),
+            upgradeNeeded: document.getElementById('upgrade-needed'),
+            notification: document.getElementById('notification'),
+            notificationText: document.getElementById('notification-text'),
+            totalTaps: document.getElementById('total-taps'),
+            hamsterHat: document.getElementById('hamster-hat'),
+            hamsterAccessory: document.getElementById('hamster-accessory'),
+            dailyBonusButton: document.getElementById('daily-bonus-button'),
+            dailyBonusTimer: document.getElementById('daily-bonus-timer'),
+            eventBanner: document.getElementById('event-banner'),
+            eventText: document.getElementById('event-text'),
+            tapPowerPrice: document.getElementById('tap-power-price'),
+            energyPrice: document.getElementById('energy-price'),
+            minigameContainer: document.getElementById('minigame-container'),
+            minigameStart: document.getElementById('minigame-start'),
+            minigameScore: document.getElementById('minigame-score'),
+            minigameTimer: document.getElementById('minigame-timer'),
+            minigameHighscore: document.getElementById('minigame-highscore')
+        };
         
-        // Загрузка данных
-        function loadUserData() {
-            const savedData = localStorage.getItem(`user_${userId}`);
-            if (savedData) {
-                try {
-                    const parsedData = JSON.parse(savedData);
-                    Object.assign(userData, parsedData);
+        // Shop prices and data
+        const shopData = {
+            'tap-power': { 
+                price: () => Math.floor(gameState.tapPowerBasePrice * Math.pow(1.2, gameState.tapPower - 1)),
+                effect: () => { 
+                    gameState.tapPower += 1;
+                    updateUI();
+                } 
+            },
+            'energy-capacity': { 
+                price: () => Math.floor(gameState.energyBasePrice * Math.pow(1.15, (gameState.maxEnergy - 50) / 10)),
+                effect: () => { 
+                    gameState.maxEnergy += 10; 
+                    gameState.energy += 10;
+                    updateUI();
                     
-                    // Восстанавливаем настройки
-                    if (parsedData.settings) {
-                        Object.assign(userData.settings, parsedData.settings);
+                    // Check for energizer achievement
+                    updateAchievementProgress('energizer', gameState.maxEnergy);
+                    updateAchievementProgress('energy-titan', gameState.maxEnergy);
+                } 
+            },
+            'hamster-upgrade': { 
+                price: () => Math.floor(100 * Math.pow(1.5, gameState.hamsterLevel - 1)),
+                effect: () => {
+                    gameState.hamsterLevel += 1;
+                    gameState.autoTapRate += 0.5;
+                    const pointsNeeded = Math.ceil((gameState.hamsterLevel - 1) / 10);
+                    gameState.upgradePoints -= pointsNeeded;
+                    
+                    // Check for upgrader achievement
+                    updateAchievementProgress('upgrader', gameState.hamsterLevel);
+                    updateAchievementProgress('legend', gameState.hamsterLevel);
+                    
+                    updateUI();
+                }
+            },
+            'small-box': { price: 50, effect: () => openBox('small') },
+            'big-box': { price: 200, effect: () => openBox('big') },
+            'golden-box': { price: 500, effect: () => openBox('golden') },
+            'hat-1': { 
+                price: 300, 
+                effect: () => {
+                    if (!gameState.purchasedItems.includes('hat-1')) {
+                        gameState.purchasedItems.push('hat-1');
+                    }
+                    gameState.equippedHat = 'hat-1';
+                    elements.hamsterHat.src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+                    elements.hamsterHat.style.display = 'block';
+                    gameState.autoTapRate = Math.floor(gameState.autoTapRate * 1.1); // +10% to auto-tap
+                    updateAchievementProgress('collector-all', gameState.purchasedItems.length);
+                }
+            },
+            'hat-2': { 
+                price: 500, 
+                effect: () => {
+                    if (!gameState.purchasedItems.includes('hat-2')) {
+                        gameState.purchasedItems.push('hat-2');
+                    }
+                    gameState.equippedHat = 'hat-2';
+                    elements.hamsterHat.src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+                    elements.hamsterHat.style.display = 'block';
+                    gameState.tapPower = Math.floor(gameState.tapPower * 1.2); // +20% to tap power
+                    updateAchievementProgress('collector-all', gameState.purchasedItems.length);
+                }
+            },
+            'accessory-1': { 
+                price: 250, 
+                effect: () => {
+                    if (!gameState.purchasedItems.includes('accessory-1')) {
+                        gameState.purchasedItems.push('accessory-1');
+                    }
+                    gameState.equippedAccessory = 'accessory-1';
+                    elements.hamsterAccessory.src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+                    elements.hamsterAccessory.style.display = 'block';
+                    gameState.maxEnergy = Math.floor(gameState.maxEnergy * 1.05); // +5% to energy
+                    updateAchievementProgress('collector-all', gameState.purchasedItems.length);
+                }
+            },
+            'accessory-2': { 
+                price: 350, 
+                effect: () => {
+                    if (!gameState.purchasedItems.includes('accessory-2')) {
+                        gameState.purchasedItems.push('accessory-2');
+                    }
+                    gameState.equippedAccessory = 'accessory-2';
+                    elements.hamsterAccessory.src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+                    elements.hamsterAccessory.style.display = 'block';
+                    gameState.energyRegenRate = 1.15; // +15% to energy regen
+                    updateAchievementProgress('collector-all', gameState.purchasedItems.length);
+                }
+            }
+        };
+        
+        // Achievements data
+        const achievementsData = {
+            'novice': { name: 'Новичок', description: 'Сделайте 100 тапов', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'collector': { name: 'Коллекционер', description: 'Соберите 500 монет', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'upgrader': { name: 'Улучшатель', description: 'Достигните 5 уровня хомяка', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'rich': { name: 'Богач', description: 'Накопите 1000 монет', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'energizer': { name: 'Энерджайзер', description: 'Увеличьте энергию до 100', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'tap-master': { name: 'Мастер тапа', description: 'Сделайте 1000 тапов', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'click-king': { name: 'Король кликов', description: 'Сделайте 5000 тапов', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'millionaire': { name: 'Миллионер', description: 'Накопите 10000 монет', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'legend': { name: 'Легенда', description: 'Достигните 20 уровня', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'collector-all': { name: 'Коллекционер вещей', description: 'Купите все предметы в магазине', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'energy-titan': { name: 'Энергетический титан', description: 'Увеличьте энергию до 250', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+            'minigame-master': { name: 'Мастер мини-игр', description: 'Наберите 1000 очков в мини-игре', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' }
+        };
+        
+        // Mini-game variables
+        let minigameActive = false;
+        let minigameScore = 0;
+        let minigameTimeLeft = 30;
+        let minigameInterval;
+        let fallingObjects = [];
+        let minigameAnimationFrame;
+        
+        // Initialize game from URL parameters
+        function initGame() {
+            const urlParams = new URLSearchParams(window.location.search);
+            gameState.userId = urlParams.get('user_id') || Math.floor(Math.random() * 1000000).toString();
+            
+            // Load saved game if available
+            const savedGame = localStorage.getItem(`hamster_game_${gameState.userId}`);
+            if (savedGame) {
+                const parsed = JSON.parse(savedGame);
+                Object.assign(gameState, parsed);
+                gameState.lastEnergyUpdate = Date.now();
+                gameState.lastAutoTap = Date.now();
+                
+                // Restore equipped items
+                if (gameState.equippedHat) {
+                    elements.hamsterHat.src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+                    elements.hamsterHat.style.display = 'block';
+                }
+                if (gameState.equippedAccessory) {
+                    elements.hamsterAccessory.src = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+                    elements.hamsterAccessory.style.display = 'block';
+                }
+            }
+            
+            // Check for active event (25% chance when loading)
+            if (Math.random() < 0.25) {
+                startEvent();
+            }
+            
+            updateUI();
+            setupEventListeners();
+            startGameLoop();
+            updateTabIndicator();
+            updateAchievementsUI();
+            setupDailyBonus();
+            
+            // Update shop prices
+            updateShopPrices();
+            
+            // Start falling objects animation loop
+            minigameAnimationFrame = requestAnimationFrame(updateFallingObjects);
+        }
+        
+        // Update all UI elements
+        function updateUI() {
+            elements.coins.textContent = gameState.coins;
+            elements.coinsPerTap.textContent = gameState.tapPower;
+            elements.energy.textContent = Math.floor(gameState.energy);
+            elements.maxEnergy.textContent = gameState.maxEnergy;
+            elements.energyBar.style.width = `${(gameState.energy / gameState.maxEnergy) * 100}%`;
+            elements.autoTap.textContent = gameState.autoTapRate.toFixed(1);
+            elements.upgradePoints.textContent = gameState.upgradePoints;
+            elements.hamsterName.textContent = gameState.hamsterName;
+            elements.hamsterLevel.textContent = gameState.hamsterLevel;
+            elements.upgradePrice.textContent = shopData['hamster-upgrade'].price();
+            elements.totalTaps.textContent = gameState.totalTaps;
+            elements.minigameHighscore.textContent = gameState.minigameHighscore;
+            
+            // Calculate upgrade points needed based on level
+            const upgradePointsNeeded = Math.ceil(gameState.hamsterLevel / 10);
+            elements.upgradeNeeded.textContent = upgradePointsNeeded;
+            
+            // Update event banner
+            if (gameState.eventActive) {
+                const timeLeft = Math.max(0, Math.floor((gameState.eventEndTime - Date.now()) / 1000));
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                elements.eventText.textContent = `Событие: Двойные монеты! (${minutes}:${seconds.toString().padStart(2, '0')})`;
+                elements.eventBanner.style.display = 'flex';
+            } else {
+                elements.eventBanner.style.display = 'none';
+            }
+        }
+        
+        // Update shop prices
+        function updateShopPrices() {
+            elements.tapPowerPrice.textContent = shopData['tap-power'].price();
+            elements.energyPrice.textContent = shopData['energy-capacity'].price();
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Tap button
+            elements.tapButton.addEventListener('click', tapHamster);
+            
+            // Hamster image
+            elements.hamster.addEventListener('click', tapHamster);
+            
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                    updateTabIndicator();
+                });
+            });
+            
+            // Shop items
+            document.querySelectorAll('.shop-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const itemType = item.dataset.item;
+                    buyItem(itemType);
+                });
+            });
+            
+            // Rename buttons
+            document.getElementById('rename-button-small').addEventListener('click', openRenameModal);
+            document.getElementById('confirm-rename').addEventListener('click', confirmRename);
+            document.getElementById('cancel-rename').addEventListener('click', closeRenameModal);
+            
+            // Box modal
+            document.getElementById('close-box-modal').addEventListener('click', () => {
+                document.getElementById('box-modal').style.display = 'none';
+            });
+            
+            // Achievement modal
+            document.getElementById('close-achievement-modal').addEventListener('click', () => {
+                document.getElementById('achievement-modal').style.display = 'none';
+            });
+            
+            // Daily bonus button
+            elements.dailyBonusButton.addEventListener('click', claimDailyBonus);
+            
+            // Mini-game start button
+            elements.minigameStart.addEventListener('click', startMinigame);
+            
+            // Mini-game container click
+            elements.minigameContainer.addEventListener('click', (e) => {
+                if (!minigameActive) return;
+                if (e.target === elements.minigameStart) return;
+                
+                // Check if clicked on a falling object
+                const clickedElement = e.target;
+                if (clickedElement.classList.contains('falling-object')) {
+                    if (clickedElement.classList.contains('coin-object')) {
+                        // Coin clicked
+                        minigameScore += 10;
+                        showFloatingCoinsMinigame(10, clickedElement.getBoundingClientRect());
+                        clickedElement.remove();
+                        
+                        // Remove from fallingObjects array
+                        fallingObjects = fallingObjects.filter(obj => obj.element !== clickedElement);
+                        
+                        // Check for minigame master achievement
+                        updateAchievementProgress('minigame-master', minigameScore);
+                    } else if (clickedElement.classList.contains('bomb-object')) {
+                        // Bomb clicked
+                        minigameScore = Math.max(0, minigameScore - 20);
+                        clickedElement.remove();
+                        
+                        // Remove from fallingObjects array
+                        fallingObjects = fallingObjects.filter(obj => obj.element !== clickedElement);
                     }
                     
-                    // Восстанавливаем энергию
-                    updateEnergy();
-                    
-                    showNotification("Данные успешно загружены!", "success");
-                } catch (e) {
-                    console.error("Ошибка загрузки данных:", e);
-                    showNotification("Ошибка загрузки данных. Создан новый профиль.", "error");
+                    elements.minigameScore.textContent = `Очки: ${minigameScore}`;
                 }
-            }
+            });
             
-            updateGlobalUI();
-            updateSettingsUI();
+            // Mini-game reward modal
+            document.getElementById('close-minigame-reward-modal').addEventListener('click', () => {
+                document.getElementById('minigame-reward-modal').style.display = 'none';
+            });
         }
         
-        // Сохранение данных
-        function saveUserData() {
-            try {
-                localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
+        // Update tab indicator position
+        function updateTabIndicator() {
+            const tabs = document.querySelectorAll('.tab');
+            const activeTab = document.querySelector('.tab.active');
+            const indicator = document.querySelector('.tab-indicator');
+            
+            if (activeTab) {
+                const tabRect = activeTab.getBoundingClientRect();
+                const tabsRect = document.querySelector('.tabs').getBoundingClientRect();
                 
-                // Если игра запущена в Telegram, отправляем данные на сервер
-                if (window.TelegramGameProxy) {
-                    TelegramGameProxy.sendData({
-                        user_id: userId,
-                        coins: userData.coins,
-                        score: userData.score,
-                        energy: userData.energy,
-                        last_update: Date.now()
-                    });
+                indicator.style.width = `${tabRect.width}px`;
+                indicator.style.left = `${tabRect.left - tabsRect.left}px`;
+            }
+        }
+        
+        // Tap the hamster
+        function tapHamster() {
+            if (gameState.energy >= 1) {
+                let coinsEarned = gameState.tapPower;
+                
+                // Double coins during event
+                if (gameState.eventActive) {
+                    coinsEarned *= 2;
                 }
-            } catch (e) {
-                console.error("Ошибка сохранения данных:", e);
-                showNotification("Ошибка сохранения данных", "error");
+                
+                gameState.coins += coinsEarned;
+                gameState.energy -= 1;
+                gameState.totalTaps += 1;
+                
+                // Animate the hamster
+                elements.hamster.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    elements.hamster.style.transform = 'scale(1)';
+                }, 100);
+                
+                // Show floating coins
+                showFloatingCoins(coinsEarned);
+                
+                updateUI();
+                saveGame();
+                showNotification(`+${coinsEarned} монет!`, 'success');
+                
+                // Check for achievements
+                updateAchievementProgress('novice', gameState.totalTaps);
+                updateAchievementProgress('collector', gameState.coins);
+                updateAchievementProgress('tap-master', gameState.totalTaps);
+                updateAchievementProgress('click-king', gameState.totalTaps);
+                updateAchievementProgress('millionaire', gameState.coins);
+            } else {
+                showNotification('Недостаточно энергии!', 'error');
             }
         }
         
-        // Обновление энергии
-        function updateEnergy() {
-            const now = Date.now();
-            const timePassed = (now - userData.lastEnergyUpdate) / 1000; // в секундах
-            const energyGained = Math.floor(timePassed / 60); // 1 энергия в минуту
+        // Show floating coins animation
+        function showFloatingCoins(amount) {
+            const hamsterRect = elements.hamster.getBoundingClientRect();
+            const coins = document.createElement('div');
+            coins.className = 'floating-coins';
+            coins.textContent = `+${amount}`;
+            coins.style.left = `${hamsterRect.left + hamsterRect.width / 2}px`;
+            coins.style.top = `${hamsterRect.top + hamsterRect.height / 2}px`;
+            document.body.appendChild(coins);
             
-            if (energyGained > 0) {
-                userData.energy = Math.min(userData.maxEnergy, userData.energy + energyGained);
-                userData.lastEnergyUpdate = now;
-                saveUserData();
-            }
-            
-            document.getElementById('energy').textContent = `${userData.energy}/${userData.maxEnergy}`;
-            document.getElementById('energy-progress').style.width = `${(userData.energy / userData.maxEnergy) * 100}%`;
+            // Remove after animation
+            setTimeout(() => {
+                coins.remove();
+            }, 1000);
         }
         
-        // Обновление глобального UI
-        function updateGlobalUI() {
-            document.getElementById('global-coins').textContent = userData.coins;
-            document.getElementById('global-score').textContent = userData.score;
-            document.getElementById('username').textContent = userData.username;
-            document.getElementById('energy').textContent = `${userData.energy}/${userData.maxEnergy}`;
-            document.getElementById('energy-progress').style.width = `${(userData.energy / userData.maxEnergy) * 100}%`;
+        // Show floating coins in mini-game
+        function showFloatingCoinsMinigame(amount, rect) {
+            const coins = document.createElement('div');
+            coins.className = 'floating-coins';
+            coins.textContent = `+${amount}`;
+            coins.style.left = `${rect.left + rect.width / 2}px`;
+            coins.style.top = `${rect.top}px`;
+            coins.style.position = 'absolute';
+            coins.style.zIndex = '20';
+            elements.minigameContainer.appendChild(coins);
             
-            // Обновляем магазин
-            document.getElementById('shop-coins').textContent = userData.coins;
-            
-            // Обновляем инвентарь
-            updateInventoryUI();
-            
-            // Обновляем квесты
-            updateQuestsUI();
+            // Remove after animation
+            setTimeout(() => {
+                coins.remove();
+            }, 1000);
         }
         
-        // Обновление UI инвентаря
-        function updateInventoryUI() {
-            const container = document.getElementById('inventory-items-list');
-            container.innerHTML = '';
+        // Buy item from shop
+        function buyItem(itemType) {
+            if (!shopData[itemType]) return;
             
-            let itemCount = 0;
-            let equippedCount = 0;
+            let price = typeof shopData[itemType].price === 'function' 
+                ? shopData[itemType].price() 
+                : shopData[itemType].price;
             
-            // Добавляем предметы из инвентаря
-            for (const [itemId, quantity] of Object.entries(userData.inventory)) {
-                if (quantity > 0) {
-                    itemCount += quantity;
-                    const isEquipped = Object.values(userData.equippedItems).includes(itemId);
-                    if (isEquipped) equippedCount++;
-                    
-                    const itemElement = createInventoryItem(itemId, quantity, isEquipped);
-                    container.appendChild(itemElement);
+            // Special check for hamster upgrades
+            if (itemType === 'hamster-upgrade') {
+                const upgradePointsNeeded = Math.ceil(gameState.hamsterLevel / 10);
+                if (gameState.upgradePoints < upgradePointsNeeded) {
+                    showNotification(`Нужно ${upgradePointsNeeded} очков улучшения!`, 'error');
+                    return;
                 }
             }
             
-            // Если инвентарь пуст
-            if (itemCount === 0) {
-                container.innerHTML = `
-                    <div class="inventory-item">
-                        <div class="inventory-item-image">
-                            <i class="fas fa-box-open"></i>
-                        </div>
-                        <div class="inventory-item-name">Инвентарь пуст</div>
-                        <div class="inventory-item-desc">Посетите магазин, чтобы приобрести предметы</div>
-                    </div>
+            if (gameState.coins >= price) {
+                gameState.coins -= price;
+                shopData[itemType].effect();
+                
+                // Special notifications for some items
+                if (itemType.includes('hat') || itemType.includes('accessory')) {
+                    showNotification('Предмет экипирован!', 'success');
+                } else if (!itemType.includes('box')) {
+                    showNotification('Улучшение куплено!', 'success');
+                }
+                
+                updateUI();
+                updateShopPrices();
+                saveGame();
+            } else {
+                showNotification('Недостаточно монет!', 'error');
+            }
+        }
+        
+        // Open a box
+        function openBox(size) {
+            let min, max, image, title;
+            
+            if (size === 'small') {
+                min = 1;
+                max = 3;
+                image = 'https://cdn-icons-png.flaticon.com/512/1177/1177568.png';
+                title = 'Маленький ящик открыт!';
+            } else if (size === 'big') {
+                min = 5;
+                max = 10;
+                image = 'https://cdn-icons-png.flaticon.com/512/2553/2553629.png';
+                title = 'Большой ящик открыт!';
+            } else { // golden
+                min = 15;
+                max = 25;
+                image = 'https://cdn-icons-png.flaticon.com/512/2553/2553634.png';
+                title = 'Золотой ящик открыт!';
+                
+                // Golden box also gives a random hat
+                const hats = ['hat-1', 'hat-2'];
+                const randomHat = hats[Math.floor(Math.random() * hats.length)];
+                shopData[randomHat].effect();
+            }
+            
+            const points = Math.floor(Math.random() * (max - min + 1)) + min;
+            gameState.upgradePoints += points;
+            
+            // Show modal
+            document.getElementById('box-modal-title').textContent = title;
+            document.getElementById('box-modal-image').src = image;
+            
+            if (size === 'golden') {
+                document.getElementById('box-modal-text').innerHTML = `
+                    Вы получили <strong>${points} очков улучшения</strong> и <strong>крутую шляпу</strong>!
+                `;
+            } else {
+                document.getElementById('box-modal-text').innerHTML = `
+                    Вы получили <strong>${points} очков улучшения</strong>!
                 `;
             }
             
-            document.getElementById('inventory-count').textContent = itemCount;
-            document.getElementById('equipped-count').textContent = equippedCount;
+            document.getElementById('box-modal').style.display = 'flex';
+            
+            updateUI();
+            saveGame();
         }
         
-        // Создание элемента инвентаря
-        function createInventoryItem(itemId, quantity, isEquipped = false) {
-            const item = getItemData(itemId);
-            if (!item) return null;
-            
-            const itemElement = document.createElement('div');
-            itemElement.className = `inventory-item ${isEquipped ? 'equipped' : ''}`;
-            itemElement.innerHTML = `
-                <div class="inventory-item-image">
-                    <i class="${item.icon}"></i>
-                </div>
-                <div class="inventory-item-name">${item.name}</div>
-                <div class="inventory-item-desc">${item.description}</div>
-                ${quantity > 1 ? `<div class="inventory-item-count">${quantity}</div>` : ''}
-                <div class="buttons-container" style="margin-top: 10px; justify-content: center;">
-                    ${item.type === 'consumable' ? 
-                        `<button class="shop-item-button btn-success use-item" data-item="${itemId}">
-                            <i class="fas fa-arrow-up"></i> Использовать
-                        </button>` : 
-                        (isEquipped ? 
-                            `<button class="shop-item-button btn-danger unequip-item" data-item="${itemId}">
-                                <i class="fas fa-arrow-down"></i> Снять
-                            </button>` : 
-                            `<button class="shop-item-button btn-info equip-item" data-item="${itemId}">
-                                <i class="fas fa-arrow-down"></i> Надеть
-                            </button>`)
-                    }
-                </div>
-            `;
-            
-            return itemElement;
+        // Rename hamster
+        function openRenameModal() {
+            document.getElementById('new-name-input').value = gameState.hamsterName;
+            document.getElementById('rename-modal').style.display = 'flex';
         }
         
-        // Получение данных о предмете
-        function getItemData(itemId) {
-            const items = {
-                'energy-potion': {
-                    name: 'Зелье энергии',
-                    description: 'Восстанавливает 20 энергии',
-                    icon: 'fas fa-bolt',
-                    type: 'consumable'
-                },
-                'hamster-skin1': {
-                    name: 'Золотой хомяк',
-                    description: 'Эксклюзивный золотой скин',
-                    icon: 'fas fa-paw',
-                    type: 'cosmetic',
-                    slot: 'hamster-skin'
-                },
-                'score-multiplier': {
-                    name: 'Множитель очков',
-                    description: 'Увеличивает множитель очков на 0.5x',
-                    icon: 'fas fa-times',
-                    type: 'upgrade'
-                }
-            };
-            
-            return items[itemId] || null;
-        }
-        
-        // Обновление UI настроек
-        function updateSettingsUI() {
-            document.getElementById('sound-toggle').innerHTML = `
-                <i class="fas fa-volume-${userData.settings.sound ? 'up' : 'mute'}"></i> 
-                ${userData.settings.sound ? 'Вкл' : 'Выкл'}
-            `;
-            
-            document.getElementById('music-toggle').innerHTML = `
-                <i class="fas fa-${userData.settings.music ? 'music' : 'bell-slash'}"></i> 
-                ${userData.settings.music ? 'Вкл' : 'Выкл'}
-            `;
-            
-            document.getElementById('notifications-toggle').innerHTML = `
-                <i class="fas fa-bell${userData.settings.notifications ? '' : '-slash'}"></i> 
-                ${userData.settings.notifications ? 'Вкл' : 'Выкл'}
-            `;
-        }
-        
-        // Обновление UI квестов
-        function updateQuestsUI() {
-            let completedCount = 0;
-            let totalRewards = 0;
-            
-            // Проверяем выполнение квестов
-            for (const [questId, quest] of Object.entries(userData.quests)) {
-                if (!quest.completed && quest.progress >= quest.target) {
-                    quest.completed = true;
-                    userData.coins += quest.reward;
-                    totalRewards += quest.reward;
-                    
-                    if (userData.settings.notifications) {
-                        showNotification(`Квест выполнен! Получено ${quest.reward} коинов`, "success");
-                        createConfettiEffect();
-                    }
-                }
-                
-                if (quest.completed) completedCount++;
-            }
-            
-            if (totalRewards > 0) {
-                updateGlobalUI();
-                saveUserData();
+        function confirmRename() {
+            const newName = document.getElementById('new-name-input').value.trim();
+            if (newName && newName.length <= 20) {
+                gameState.hamsterName = newName;
+                updateUI();
+                saveGame();
+                closeRenameModal();
+                showNotification('Имя изменено!', 'success');
+            } else {
+                showNotification('Имя должно быть от 1 до 20 символов', 'error');
             }
         }
         
-        // Показ уведомления
-        function showNotification(message, type = "info") {
-            if (!userData.settings.notifications) return;
+        function closeRenameModal() {
+            document.getElementById('rename-modal').style.display = 'none';
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const icon = type === 'error' 
+                ? 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' 
+                : type === 'warning'
+                ? 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png'
+                : type === 'info'
+                ? 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png'
+                : 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
             
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
+            elements.notification.innerHTML = `
+                <img src="${icon}" alt="Notification" style="width: 20px; height: 20px;">
+                <span id="notification-text">${message}</span>
+            `;
             
-            let icon = '';
-            switch(type) {
-                case "success":
-                    icon = '<i class="fas fa-check-circle"></i>';
-                    break;
-                case "error":
-                    icon = '<i class="fas fa-exclamation-circle"></i>';
-                    break;
-                default:
-                    icon = '<i class="fas fa-info-circle"></i>';
-            }
-            
-            notification.innerHTML = `${icon}<span>${message}</span>`;
-            document.body.appendChild(notification);
+            elements.notification.className = 'notification';
+            elements.notification.classList.add(type === 'error' ? 'error' : 
+                                            type === 'warning' ? 'warning' :
+                                            type === 'info' ? 'info' : 'success');
+            elements.notification.classList.add('show');
             
             setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
+                elements.notification.classList.remove('show');
             }, 3000);
         }
         
-        // Эффект конфетти
-        function createConfettiEffect(count = 50) {
-            for (let i = 0; i < count; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.backgroundColor = getRandomColor();
-                confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
-                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
-                document.body.appendChild(confetti);
+        // Game loop for passive energy regen and auto-tapping
+        function startGameLoop() {
+            setInterval(() => {
+                // Energy regeneration (based on rate)
+                const now = Date.now();
+                const minutesPassed = (now - gameState.lastEnergyUpdate) / (60 * 1000);
                 
-                setTimeout(() => {
-                    confetti.remove();
-                }, 5000);
-            }
+                if (minutesPassed >= 1 / gameState.energyRegenRate) {
+                    gameState.energy = Math.min(
+                        gameState.maxEnergy,
+                        gameState.energy + Math.floor(minutesPassed * gameState.energyRegenRate)
+                    );
+                    gameState.lastEnergyUpdate = now;
+                }
+                
+                // Auto-tapping (based on rate per hour)
+                const hoursPassed = (now - gameState.lastAutoTap) / (60 * 60 * 1000);
+                if (hoursPassed >= 1 / gameState.autoTapRate) {
+                    let taps = Math.floor(hoursPassed * gameState.autoTapRate);
+                    
+                    // Apply hat bonus if equipped
+                    if (gameState.equippedHat === 'hat-1') {
+                        taps = Math.floor(taps * 1.1);
+                    }
+                    
+                    gameState.coins += taps;
+                    gameState.lastAutoTap = now;
+                    
+                    if (taps > 0) {
+                        showNotification(`Авто-тап: +${taps} монет!`, 'info');
+                    }
+                }
+                
+                // Check for event end
+                if (gameState.eventActive && now > gameState.eventEndTime) {
+                    gameState.eventActive = false;
+                    showNotification('Событие завершено!', 'warning');
+                }
+                
+                updateUI();
+                saveGame();
+            }, 1000); // Check every second
         }
         
-        function getRandomColor() {
-            const colors = [
-                '#FF7F50', '#4D96FF', '#FF6B6B', 
-                '#4CAF50', '#FFC107', '#9C27B0'
-            ];
-            return colors[Math.floor(Math.random() * colors.length)];
+        // Update achievement progress
+        function updateAchievementProgress(id, progress) {
+            const achievement = gameState.achievements[id];
+            if (!achievement || achievement.unlocked) return;
+            
+            achievement.progress = Math.min(progress, achievement.target);
+            
+            // Check if achievement is completed
+            if (achievement.progress >= achievement.target && !achievement.unlocked) {
+                achievement.unlocked = true;
+                unlockAchievement(id);
+            }
+            
+            updateAchievementsUI();
         }
         
-        // Инициализация игры с хомяком
-        const hamsterGame = {
-            elements: {
-                hamster: document.getElementById('hamster'),
-                gameArea: document.getElementById('hamster-game-area'),
-                scoreDisplay: document.getElementById('hamster-score-display'),
-                timerDisplay: document.getElementById('hamster-timer'),
-                coinsDisplay: document.getElementById('hamster-coins-display'),
-                highscoreDisplay: document.getElementById('hamster-highscore-display'),
-                levelDisplay: document.getElementById('hamster-level'),
-                xpDisplay: document.getElementById('hamster-xp'),
-                xpNeededDisplay: document.getElementById('hamster-xp-needed'),
-                levelProgress: document.getElementById('hamster-level-progress'),
-                startBtn: document.getElementById('hamster-start-btn'),
-                upgradeBtn: document.getElementById('hamster-upgrade-btn'),
-                finishBtn: document.getElementById('hamster-finish-btn')
-            },
-            variables: {
-                score: 0,
-                timeLeft: 30,
-                gameInterval: null,
-                timerInterval: null,
-                isGameRunning: false,
-                tapCount: 0
-            },
-            init: function() {
-                this.updateHamsterUI();
-                this.elements.hamster.addEventListener('click', this.handleHamsterClick.bind(this));
-                this.elements.startBtn.addEventListener('click', this.startGame.bind(this));
-                this.elements.upgradeBtn.addEventListener('click', this.upgradeHamster.bind(this));
-                this.elements.finishBtn.addEventListener('click', this.endGame.bind(this));
-                this.placeHamster();
-            },
-            placeHamster: function() {
-                const maxX = this.elements.gameArea.offsetWidth - this.elements.hamster.offsetWidth;
-                const maxY = this.elements.gameArea.offsetHeight - this.elements.hamster.offsetHeight;
-                
-                this.elements.hamster.style.left = Math.random() * maxX + 'px';
-                this.elements.hamster.style.top = Math.random() * maxY + 'px';
-            },
-            createTapEffect: function(x, y) {
-                const effect = document.createElement('div');
-                effect.className = 'tap-effect';
-                effect.style.left = `${x - 20}px`;
-                effect.style.top = `${y - 20}px`;
-                effect.style.backgroundColor = getRandomColor();
-                this.elements.gameArea.appendChild(effect);
-                
-                setTimeout(() => {
-                    effect.remove();
-                }, 600);
-            },
-            handleHamsterClick: function(e) {
-                if (!this.variables.isGameRunning) return;
-                
-                const rect = this.elements.hamster.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                this.createTapEffect(x, y);
-                
-                // Увеличиваем счет с учетом множителя
-                this.variables.score += userData.hamster.multiplier;
-                this.variables.tapCount++;
-                
-                this.elements.scoreDisplay.textContent = Math.floor(this.variables.score);
-                
-                // Анимация хомяка
-                this.elements.hamster.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    this.elements.hamster.style.transform = 'scale(1)';
-                }, 100);
-                
-                // Перемещаем хомяка
-                this.placeHamster();
-                
-                // Обновляем прогресс квеста
-                userData.quests.tapHamster.progress = this.variables.tapCount;
-                updateQuestsUI();
-            },
-            updateTimer: function() {
-                this.variables.timeLeft--;
-                this.elements.timerDisplay.textContent = this.variables.timeLeft;
-                
-                if (this.variables.timeLeft <= 0) {
-                    this.endGame();
-                }
-            },
-            startGame: function() {
-                if (this.variables.isGameRunning || userData.energy < 10) {
-                    if (userData.energy < 10) {
-                        showNotification("Недостаточно энергии!", "error");
-                    }
-                    return;
-                }
-                
-                // Расходуем энергию
-                userData.energy -= 10;
-                updateGlobalUI();
-                
-                // Сбрасываем переменные
-                this.variables.score = 0;
-                this.variables.timeLeft = 30;
-                this.variables.tapCount = 0;
-                
-                // Обновляем UI
-                this.elements.scoreDisplay.textContent = '0';
-                this.elements.timerDisplay.textContent = '30';
-                this.elements.startBtn.disabled = true;
-                this.elements.upgradeBtn.disabled = true;
-                this.elements.finishBtn.disabled = false;
-                
-                // Размещаем хомяка
-                this.placeHamster();
-                
-                // Запускаем таймер
-                this.variables.timerInterval = setInterval(this.updateTimer.bind(this), 1000);
-                
-                // Анимация начала игры
-                this.elements.gameArea.style.boxShadow = 'inset 0 0 30px rgba(255, 214, 0, 0.5)';
-                setTimeout(() => {
-                    this.elements.gameArea.style.boxShadow = 'inset 0 0 20px rgba(0,0,0,0.1)';
-                }, 1000);
-                
-                this.variables.isGameRunning = true;
-                
-                // Обновляем прогресс квеста
-                userData.quests.playGames.progress++;
-                updateQuestsUI();
-            },
-            endGame: function() {
-                clearInterval(this.variables.timerInterval);
-                this.variables.isGameRunning = false;
-                
-                this.elements.startBtn.disabled = false;
-                this.elements.finishBtn.disabled = true;
-                
-                // Начисляем награды
-                const coinsEarned = Math.floor(this.variables.score / 2);
-                userData.coins += coinsEarned;
-                userData.score += this.variables.score;
-                
-                // Обновляем рекорд
-                if (this.variables.score > userData.hamster.highscore) {
-                    userData.hamster.highscore = this.variables.score;
-                    this.elements.highscoreDisplay.textContent = userData.hamster.highscore;
-                }
-                
-                // Добавляем опыт
-                userData.hamster.xp += Math.floor(this.variables.score / 5);
-                this.checkLevelUp();
-                
-                updateGlobalUI();
-                this.updateHamsterUI();
-                saveUserData();
-                
-                // Показываем результаты
-                const resultMessage = `Игра окончена!\n\n🏆 Счет: ${this.variables.score}\n💰 Получено коинов: ${coinsEarned}\n\nУровень хомяка: ${userData.hamster.level}`;
-                
-                if (window.TelegramGameProxy) {
-                    alert(resultMessage);
-                } else {
-                    showNotification(resultMessage, "success");
-                    createConfettiEffect(30);
-                }
-            },
-            updateHamsterUI: function() {
-                this.elements.levelDisplay.textContent = userData.hamster.level;
-                this.elements.xpDisplay.textContent = userData.hamster.xp;
-                this.elements.xpNeededDisplay.textContent = userData.hamster.xpToNextLevel;
-                this.elements.levelProgress.style.width = `${(userData.hamster.xp / userData.hamster.xpToNextLevel) * 100}%`;
-                this.elements.highscoreDisplay.textContent = userData.hamster.highscore;
-                
-                const upgradeCost = this.calculateUpgradeCost();
-                this.elements.upgradeBtn.innerHTML = `
-                    <i class="fas fa-level-up-alt"></i> Улучшить (${upgradeCost} коинов)
-                `;
-                this.elements.upgradeBtn.disabled = userData.coins < upgradeCost;
-            },
-            calculateUpgradeCost: function() {
-                return Math.floor(50 * Math.pow(1.2, userData.hamster.level));
-            },
-            upgradeHamster: function() {
-                const upgradeCost = this.calculateUpgradeCost();
-                
-                if (userData.coins >= upgradeCost) {
-                    userData.coins -= upgradeCost;
-                    userData.hamster.level++;
-                    userData.hamster.income += 2;
-                    
-                    // Сбрасываем опыт при повышении уровня
-                    userData.hamster.xp = 0;
-                    userData.hamster.xpToNextLevel = Math.floor(userData.hamster.xpToNextLevel * 1.5);
-                    
-                    updateGlobalUI();
-                    this.updateHamsterUI();
-                    saveUserData();
-                    
-                    // Анимация
-                    this.elements.hamster.classList.add('bounce');
-                    setTimeout(() => {
-                        this.elements.hamster.classList.remove('bounce');
-                    }, 1000);
-                    
-                    showNotification(`Хомяк улучшен до уровня ${userData.hamster.level}!`, "success");
-                    createConfettiEffect(20);
-                } else {
-                    showNotification("Недостаточно коинов для улучшения!", "error");
-                }
-            },
-            checkLevelUp: function() {
-                if (userData.hamster.xp >= userData.hamster.xpToNextLevel) {
-                    userData.hamster.level++;
-                    userData.hamster.xp = 0;
-                    userData.hamster.xpToNextLevel = Math.floor(userData.hamster.xpToNextLevel * 1.5);
-                    userData.hamster.multiplier += 0.1;
-                    
-                    showNotification(`🎉 Новый уровень! Теперь вы ${userData.hamster.level} уровня`, "success");
-                    createConfettiEffect(30);
-                }
+        // Unlock achievement
+        function unlockAchievement(id) {
+            const achievement = gameState.achievements[id];
+            if (!achievement) return;
+            
+            // Apply reward
+            if (achievement.reward.coins) {
+                gameState.coins += achievement.reward.coins;
             }
-        };
+            if (achievement.reward.points) {
+                gameState.upgradePoints += achievement.reward.points;
+            }
+            
+            // Show achievement modal
+            document.getElementById('achievement-modal-title').textContent = 'Достижение получено!';
+            document.getElementById('achievement-modal-name').textContent = achievementsData[id].name;
+            document.getElementById('achievement-modal-desc').textContent = achievementsData[id].description;
+            
+            let rewardText = '';
+            if (achievement.reward.coins) {
+                rewardText = `<img src="https://cdn-icons-png.flaticon.com/512/1820/1820899.png" alt="Coins" style="width: 16px; height: 16px;">
+                               Награда: ${achievement.reward.coins} монет`;
+            } else if (achievement.reward.points) {
+                rewardText = `<img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Upgrade" style="width: 16px; height: 16px;">
+                               Награда: ${achievement.reward.points} очков улучшения`;
+            }
+            
+            document.getElementById('achievement-modal-reward').innerHTML = rewardText;
+            document.getElementById('achievement-modal').style.display = 'flex';
+            
+            showNotification(`Достижение "${achievementsData[id].name}" получено!`, 'success');
+            updateUI();
+            saveGame();
+        }
         
-        // Инициализация магазина
-        const shopSystem = {
-            init: function() {
-                document.querySelectorAll('.shop-item-button').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const itemId = e.target.closest('.shop-item').getAttribute('data-item');
-                        this.purchaseItem(itemId);
-                    });
-                });
-            },
-            purchaseItem: function(itemId) {
-                const item = getItemData(itemId);
-                if (!item) return;
+        // Update achievements UI
+        function updateAchievementsUI() {
+            Object.keys(gameState.achievements).forEach(id => {
+                const achievement = gameState.achievements[id];
+                const element = document.getElementById(`achievement-${id}`);
+                if (!element) return;
                 
-                const price = this.getItemPrice(itemId);
-                
-                if (userData.coins >= price) {
-                    userData.coins -= price;
-                    
-                    // Добавляем предмет в инвентарь
-                    if (!userData.inventory[itemId]) {
-                        userData.inventory[itemId] = 0;
-                    }
-                    userData.inventory[itemId]++;
-                    
-                    // Если предмет можно надеть сразу (например, скин)
-                    if (item.type === 'cosmetic' && !userData.equippedItems[item.slot]) {
-                        userData.equippedItems[item.slot] = itemId;
-                    }
-                    
-                    updateGlobalUI();
-                    saveUserData();
-                    
-                    showNotification(`Вы купили ${item.name}!`, "success");
-                    
-                    // Специальные эффекты для некоторых предметов
-                    if (itemId === 'energy-potion') {
-                        userData.energy = Math.min(userData.maxEnergy, userData.energy + 20);
-                        updateGlobalUI();
-                    }
-                } else {
-                    showNotification("Недостаточно коинов для покупки!", "error");
+                if (achievement.unlocked) {
+                    element.classList.add('unlocked');
                 }
-            },
-            getItemPrice: function(itemId) {
-                const prices = {
-                    'energy-potion': 80,
-                    'hamster-skin1': 100,
-                    'score-multiplier': 200,
-                    'runner-boost': 120
-                };
-                return prices[itemId] || 0;
-            }
-        };
-        
-        // Инициализация настроек
-        const settingsSystem = {
-            init: function() {
-                document.getElementById('sound-toggle').addEventListener('click', () => {
-                    userData.settings.sound = !userData.settings.sound;
-                    updateSettingsUI();
-                });
-                
-                document.getElementById('music-toggle').addEventListener('click', () => {
-                    userData.settings.music = !userData.settings.music;
-                    updateSettingsUI();
-                });
-                
-                document.getElementById('notifications-toggle').addEventListener('click', () => {
-                    userData.settings.notifications = !userData.settings.notifications;
-                    updateSettingsUI();
-                });
-                
-                document.getElementById('save-settings-btn').addEventListener('click', () => {
-                    saveUserData();
-                    showNotification("Настройки сохранены!", "success");
-                });
-                
-                document.getElementById('reset-progress-btn').addEventListener('click', () => {
-                    if (confirm("Вы уверены, что хотите сбросить весь прогресс? Это действие нельзя отменить!")) {
-                        localStorage.removeItem(`user_${userId}`);
-                        location.reload();
-                    }
-                });
-            }
-        };
-        
-        // Переключение между играми
-        document.querySelectorAll('.game-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Убираем активный класс у всех вкладок
-                document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
-                // Добавляем активный класс текущей вкладке
-                tab.classList.add('active');
-                
-                // Скрываем все игры
-                document.querySelectorAll('.game-container').forEach(game => {
-                    game.classList.remove('active');
-                });
-                
-                // Показываем выбранную игру
-                const gameId = tab.getAttribute('data-game');
-                document.getElementById(gameId).classList.add('active');
             });
-        });
+        }
         
-        // Использование предметов из инвентаря
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('use-item')) {
-                const itemId = e.target.getAttribute('data-item');
-                useInventoryItem(itemId);
-            }
+        // Start a special event
+        function startEvent() {
+            gameState.eventActive = true;
+            gameState.eventEndTime = Date.now() + 60 * 60 * 1000; // 1 hour from now
             
-            if (e.target.classList.contains('equip-item')) {
-                const itemId = e.target.getAttribute('data-item');
-                equipItem(itemId);
-            }
-            
-            if (e.target.classList.contains('unequip-item')) {
-                const itemId = e.target.getAttribute('data-item');
-                unequipItem(itemId);
-            }
-        });
+            showNotification('Событие: Двойные монеты в течение часа!', 'info');
+        }
         
-        function useInventoryItem(itemId) {
-            const item = getItemData(itemId);
-            if (!item || item.type !== 'consumable') return;
+        // Set up daily bonus
+        function setupDailyBonus() {
+            const now = Date.now();
+            const lastBonus = gameState.lastDailyBonus || 0;
+            const timeSinceLastBonus = now - lastBonus;
+            const twentyFourHours = 24 * 60 * 60 * 1000;
             
-            if (userData.inventory[itemId] > 0) {
-                userData.inventory[itemId]--;
-                if (userData.inventory[itemId] <= 0) {
-                    delete userData.inventory[itemId];
-                }
+            if (timeSinceLastBonus < twentyFourHours) {
+                // Bonus already claimed, show timer
+                elements.dailyBonusButton.disabled = true;
+                updateDailyBonusTimer(twentyFourHours - timeSinceLastBonus);
+            } else {
+                elements.dailyBonusButton.disabled = false;
+                elements.dailyBonusTimer.textContent = 'Бонус доступен!';
+            }
+        }
+        
+        // Update daily bonus timer
+        function updateDailyBonusTimer(remainingTime) {
+            const hours = Math.floor(remainingTime / (60 * 60 * 1000));
+            const minutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+            
+            elements.dailyBonusTimer.textContent = `Следующий бонус через: ${hours}ч ${minutes}м`;
+            
+            if (remainingTime > 0) {
+                setTimeout(() => {
+                    updateDailyBonusTimer(remainingTime - 1000);
+                }, 1000);
+            } else {
+                elements.dailyBonusButton.disabled = false;
+                elements.dailyBonusTimer.textContent = 'Бонус доступен!';
+            }
+        }
+        
+        // Claim daily bonus
+        function claimDailyBonus() {
+            const bonusAmount = 100 + (gameState.hamsterLevel * 5);
+            gameState.coins += bonusAmount;
+            gameState.lastDailyBonus = Date.now();
+            
+            showNotification(`Ежедневный бонус: +${bonusAmount} монет!`, 'success');
+            elements.dailyBonusButton.disabled = true;
+            setupDailyBonus();
+            updateUI();
+            saveGame();
+        }
+        
+        // Mini-game functions
+        function startMinigame() {
+            minigameActive = true;
+            minigameScore = 0;
+            minigameTimeLeft = 30;
+            fallingObjects = [];
+            
+            // Clear container
+            elements.minigameContainer.innerHTML = `
+                <div class="mini-game-score" id="minigame-score">Очки: 0</div>
+                <div class="mini-game-timer" id="minigame-timer">Время: 30</div>
+            `;
+            
+            elements.minigameScore = document.getElementById('minigame-score');
+            elements.minigameTimer = document.getElementById('minigame-timer');
+            
+            // Start game loop
+            minigameInterval = setInterval(updateMinigame, 1000);
+            
+            // Start object spawning
+            setInterval(spawnFallingObject, 800);
+        }
+        
+        function updateMinigame() {
+            minigameTimeLeft--;
+            elements.minigameTimer.textContent = `Время: ${minigameTimeLeft}`;
+            
+            if (minigameTimeLeft <= 0) {
+                endMinigame();
+            }
+        }
+        
+        function spawnFallingObject() {
+            if (!minigameActive) return;
+            
+            const containerRect = elements.minigameContainer.getBoundingClientRect();
+            const object = document.createElement('div');
+            object.className = 'falling-object';
+            
+            // Randomly decide if it's a coin or bomb (80% chance for coin)
+            const isCoin = Math.random() < 0.8;
+            if (isCoin) {
+                object.classList.add('coin-object');
+            } else {
+                object.classList.add('bomb-object');
+            }
+            
+            // Random position
+            const left = Math.random() * (containerRect.width - 40);
+            object.style.left = `${left}px`;
+            object.style.top = '0px';
+            
+            elements.minigameContainer.appendChild(object);
+            fallingObjects.push({
+                element: object,
+                speed: 2 + Math.random() * 3,
+                isCoin: isCoin,
+                position: 0
+            });
+        }
+        
+        function updateFallingObjects() {
+            if (!minigameActive) return;
+            
+            const containerRect = elements.minigameContainer.getBoundingClientRect();
+            
+            for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                const obj = fallingObjects[i];
+                obj.position += obj.speed;
+                obj.element.style.top = `${obj.position}px`;
                 
-                // Применяем эффект предмета
-                if (itemId === 'energy-potion') {
-                    userData.energy = Math.min(userData.maxEnergy, userData.energy + 20);
-                    showNotification("Энергия восстановлена на 20 единиц!", "success");
+                // Remove if out of bounds
+                if (obj.position > containerRect.height) {
+                    obj.element.remove();
+                    fallingObjects.splice(i, 1);
                 }
-                
-                updateGlobalUI();
-                saveUserData();
+            }
+            
+            // Continue animation
+            minigameAnimationFrame = requestAnimationFrame(updateFallingObjects);
+        }
+        
+        function endMinigame() {
+            minigameActive = false;
+            clearInterval(minigameInterval);
+            cancelAnimationFrame(minigameAnimationFrame);
+            
+            // Clear falling objects
+            fallingObjects.forEach(obj => obj.element.remove());
+            fallingObjects = [];
+            
+            // Calculate reward (1 coin per 10 points)
+            const reward = Math.floor(minigameScore / 10);
+            gameState.coins += reward;
+            
+            // Update highscore if needed
+            if (minigameScore > gameState.minigameHighscore) {
+                gameState.minigameHighscore = minigameScore;
+                elements.minigameHighscore.textContent = gameState.minigameHighscore;
+            }
+            
+            // Show reward modal
+            document.getElementById('minigame-reward-text').textContent = `Вы заработали ${reward} монет!`;
+            document.getElementById('minigame-reward-modal').style.display = 'flex';
+            
+            // Update UI and save
+            updateUI();
+            saveGame();
+            
+            // Show start button again
+            elements.minigameContainer.innerHTML = `
+                <div class="mini-game-score">Очки: ${minigameScore}</div>
+                <div class="mini-game-timer">Время: 0</div>
+                <button class="mini-game-start" id="minigame-start">Играть снова</button>
+            `;
+            
+            document.getElementById('minigame-start').addEventListener('click', startMinigame);
+        }
+        
+        // Save game state
+        function saveGame() {
+            const saveData = {
+                coins: gameState.coins,
+                tapPower: gameState.tapPower,
+                energy: gameState.energy,
+                maxEnergy: gameState.maxEnergy,
+                hamsterLevel: gameState.hamsterLevel,
+                autoTapRate: gameState.autoTapRate,
+                upgradePoints: gameState.upgradePoints,
+                hamsterName: gameState.hamsterName,
+                lastEnergyUpdate: gameState.lastEnergyUpdate,
+                lastAutoTap: gameState.lastAutoTap,
+                totalTaps: gameState.totalTaps,
+                achievements: gameState.achievements,
+                equippedHat: gameState.equippedHat,
+                equippedAccessory: gameState.equippedAccessory,
+                lastDailyBonus: gameState.lastDailyBonus,
+                eventActive: gameState.eventActive,
+                eventEndTime: gameState.eventEndTime,
+                purchasedItems: gameState.purchasedItems,
+                minigameHighscore: gameState.minigameHighscore,
+                energyRegenRate: gameState.energyRegenRate,
+                tapPowerBasePrice: gameState.tapPowerBasePrice,
+                energyBasePrice: gameState.energyBasePrice
+            };
+            
+            localStorage.setItem(`hamster_game_${gameState.userId}`, JSON.stringify(saveData));
+            
+            // Also save to server if connected to Telegram
+            if (gameState.userId && window.Telegram && window.Telegram.WebApp) {
+                Telegram.WebApp.sendData(JSON.stringify(saveData));
             }
         }
         
-        function equipItem(itemId) {
-            const item = getItemData(itemId);
-            if (!item || item.type !== 'cosmetic') return;
-            
-            // Снимаем предыдущий предмет в этом слоте
-            if (userData.equippedItems[item.slot]) {
-                unequipItem(userData.equippedItems[item.slot]);
-            }
-            
-            userData.equippedItems[item.slot] = itemId;
-            
-            // Применяем эффект
-            if (itemId === 'hamster-skin1') {
-                document.getElementById('hamster').style.filter = 'drop-shadow(0 5px 10px rgba(255, 215, 0, 0.5))';
-                showNotification("Скин 'Золотой хомяк' надет!", "success");
-            }
-            
-            updateGlobalUI();
-            saveUserData();
-        }
-        
-        function unequipItem(itemId) {
-            const item = getItemData(itemId);
-            if (!item || item.type !== 'cosmetic') return;
-            
-            delete userData.equippedItems[item.slot];
-            
-            // Убираем эффект
-            if (itemId === 'hamster-skin1') {
-                document.getElementById('hamster').style.filter = 'drop-shadow(0 5px 10px rgba(0,0,0,0.2))';
-                showNotification("Скин 'Золотой хомяк' снят", "info");
-            }
-            
-            updateGlobalUI();
-            saveUserData();
-        }
-        
-        // Инициализация при загрузке страницы
-        window.onload = function() {
-            loadUserData();
-            
-            // Инициализация систем
-            hamsterGame.init();
-            shopSystem.init();
-            settingsSystem.init();
-            
-            // Обновляем энергию каждую минуту
-            setInterval(updateEnergy, 60000);
-            
-            // Для демо: добавляем тестовые предметы
-            if (!window.TelegramGameProxy) {
-                userData.inventory['energy-potion'] = 3;
-                userData.inventory['hamster-skin1'] = 1;
-                updateGlobalUI();
-            }
-        };
+        // Initialize the game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+        });
     </script>
 </body>
 </html>
